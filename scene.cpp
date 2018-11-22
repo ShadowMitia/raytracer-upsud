@@ -59,6 +59,41 @@ Color Scene::trace(const Ray &ray)
 
     Color color = material->color;                  // place holder
 
+    //Reflected intensities
+    double Id = 0;
+    double Is = 0;
+    double Ia = 0;
+
+    //Ambiant
+    double ia = 0.8;
+    Ia = ia * material->ka; 
+
+    N.normalize();
+    
+    for( size_t i = 0; i < lights.size() ; ++i){
+	//Hit to light vector
+	Vector L = lights[i]->position - hit;
+	L.normalize();
+	//Diffuse
+	double id = 1.1;
+	double diff = id * material->kd * L.dot(N);
+		
+	//If cosinus is negative (in the shadow area) then the diff isn't taken into account
+	if(diff > 0){
+		Id += diff;
+		//Vector of reflected light
+		Vector R = (2 * N.dot(L) * N) - L;
+		R.normalize();
+		//Specular
+		double is = 1;
+		double alpha = 20;
+		double spec = is * material->ks * pow(R.dot(V), alpha);
+		Is += spec;
+	}
+    }
+    
+    //final color
+    color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0)); 
     return color;
 }
 

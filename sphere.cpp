@@ -40,11 +40,20 @@ Hit Sphere::intersect(const Ray &ray)
 
     // place holder for actual intersection calculation
 
-    Vector OC = (position - ray.O).normalized();
-    if (OC.dot(ray.D) < 0.999) {
+    
+    Vector OC = (position - ray.O);
+    //Distance between C and ray
+    double distance = (OC - (  (OC.dot(ray.D)/ray.D.dot(ray.D)) *ray.D ) ).length();
+    
+    if (distance > r) {
         return Hit::NO_HIT();
     }
-    double t = 1000;
+	//Distance of the projection of C on the ray from the ray origin
+	double tco = sqrt(OC.dot(OC) - distance * distance);
+	//Distance of the projection of C on the ray from the intersection point
+	double tcp = sqrt(r * r - distance * distance);
+	//Distance of the intersection point from the ray origin
+	double t = tco - tcp;
 
     /****************************************************
     * RT1.2: NORMAL CALCULATION
@@ -54,8 +63,12 @@ Hit Sphere::intersect(const Ray &ray)
     * 
     * Insert calculation of the sphere's normal at the intersection point.
     ****************************************************/
-
-    Vector N /* = ... */;
+	
+	//Intersection point P = O + OP, (OP = t * ray.D)
+	Vector P = ray.O + t * ray.D;
+	//Vector CP = N
+	Vector N = P - position;
+	N.normalize();
 
     return Hit(t,N);
 }
