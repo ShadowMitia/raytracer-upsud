@@ -94,6 +94,7 @@ Color Scene::trace(const Ray &ray)
 
   //final color
   color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
+
   return color;
 }
 
