@@ -78,21 +78,21 @@ artifacts:
 #     deployment configuration    #
 #---------------------------------#
 
-# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
-# provider names are case-sensitive!
-deploy:
-    # FTP deployment provider settings
-  - provider: FTP
-    protocol: sftp
-    host: shadowmitia.zapto.org
-    username: ftp
-    password:
-      secure: CDOQRd/1c1RyrZsG1VhPzQ==
-    folder:
-    application:
-    active_mode: false
-    beta: true      # enable alternative FTP library for 'ftp' and 'ftps' modes
-    debug: true     # show complete FTP log
+# # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+# # provider names are case-sensitive!
+# deploy:
+#     # FTP deployment provider settings
+#   - provider: FTP
+#     protocol: sftp
+#     host: shadowmitia.zapto.org
+#     username: ftp
+#     password:
+#       secure: CDOQRd/1c1RyrZsG1VhPzQ==
+#     folder:
+#     application:
+#     active_mode: false
+#     beta: true      # enable alternative FTP library for 'ftp' and 'ftps' modes
+#     debug: true     # show complete FTP log
 
 #---------------------------------#
 #         notifications           #
