@@ -1,0 +1,125 @@
+# branches to build
+branches:
+  only:
+    - master
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: true
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
+# Maximum number of concurrent jobs for the project
+max_jobs: 1
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - git config --global core.autocrlf input
+
+# clone directory
+clone_folder: c:\projects\raytracer
+
+# fetch repository as zip archive
+shallow_clone: true                 # default is "false"
+
+# set clone depth
+clone_depth: 1                      # clone entire repository history if not defined
+
+# this is how to allow failing jobs in the matrix
+matrix:
+  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# to add several platforms to build matrix:
+platform:
+  - x86
+  - x64
+  - Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Debug
+
+# Build settings, not to be confused with "before_build" and "after_build".
+# "project" is relative to the original build directory and not influenced by directory changes in "before_build".
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: RayTracer.sln      # path to Visual Studio solution or project
+
+
+# to disable automatic builds
+#build: off
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+
+  # pushing a single file
+  - path: debug/RayTracer.exe
+
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+# provider names are case-sensitive!
+deploy:
+    # FTP deployment provider settings
+  - provider: FTP
+    protocol: sftp
+    host: shadowmitia.zapto.org
+    username: ftp
+    password:
+      secure: CDOQRd/1c1RyrZsG1VhPzQ==
+    folder:
+    application:
+    active_mode: false
+    beta: true      # enable alternative FTP library for 'ftp' and 'ftps' modes
+    debug: true     # show complete FTP log
+
+# scripts to run before deployment
+before_deploy:
+
+# scripts to run after deployment
+after_deploy:
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+
+# to disable deployment
+#deploy: off
+
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+
+notifications:
+
+  # Email
+  - provider: Email
+    to:
+      - dimitri@belopopsky.com
+      - virginie.touchais@u-psud.fr
+    subject: 'Build {{status}}'                  # optional
+    message: "{{message}}, {{commitId}}, ..."    # optional
+    on_build_status_changed: true
