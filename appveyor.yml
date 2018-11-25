@@ -69,7 +69,7 @@ build:
 artifacts:
 
   # pushing a single file
-  - path: Debug/RayTracer.exe
+  - path: Debug/*
 
 
 #---------------------------------#
