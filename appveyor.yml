@@ -88,6 +88,7 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: shadowmitia.zapto.org
+    port: 2224
     username: ftp
     password:
       secure: CDOQRd/1c1RyrZsG1VhPzQ==
