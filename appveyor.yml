@@ -85,7 +85,6 @@ deploy:
   - provider: FTP
     protocol: sftp
     host: shadowmitia.zapto.org
-    port: 2224
     username: ftp
     password:
       secure: CDOQRd/1c1RyrZsG1VhPzQ==
@@ -94,18 +93,6 @@ deploy:
     active_mode: false
     beta: true      # enable alternative FTP library for 'ftp' and 'ftps' modes
     debug: true     # show complete FTP log
-
-# scripts to run before deployment
-before_deploy:
-
-# scripts to run after deployment
-after_deploy:
-
-# to run your custom scripts instead of provider deployments
-deploy_script:
-
-# to disable deployment
-#deploy: off
 
 #---------------------------------#
 #         notifications           #
