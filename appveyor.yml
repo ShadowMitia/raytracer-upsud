@@ -41,9 +41,6 @@ matrix:
 #       build configuration       #
 #---------------------------------#
 
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
-
 # to add several platforms to build matrix:
 platform:
   - x86
