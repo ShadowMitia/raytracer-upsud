@@ -8,6 +8,8 @@
 //  Authors:
 //    Maarten Everts
 //    Jasper van de Gronde
+//    Virginie Touchais
+//    Dimitri Belopopsky
 //
 //  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
@@ -65,9 +67,8 @@ Color Scene::trace(const Ray &ray)
   double Ia = 0;
 
   //Ambiant
-  double ia = 0.8;
+  double ia = 1;
   Ia = ia * material->ka;
-
   N.normalize();
 
   for( size_t i = 0; i < lights.size() ; ++i){
@@ -75,9 +76,9 @@ Color Scene::trace(const Ray &ray)
     Vector L = lights[i]->position - hit;
     L.normalize();
     //Diffuse
-    double id = 1.1;
+    double id = 1;
     double diff = id * material->kd * L.dot(N);
-
+   
     //If cosinus is negative (in the shadow area) then the diff isn't taken into account
     if(diff > 0){
       Id += diff;
@@ -86,11 +87,19 @@ Color Scene::trace(const Ray &ray)
       R.normalize();
       //Specular
       double is = 1;
-      double alpha = 20;
-      double spec = is * material->ks * pow(R.dot(V), alpha);
-      Is += spec;
+      //scale = cosinus of angle between R and V
+      double scale = R.dot(V);
+      //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account 
+      if(scale > 0){
+	      //alpha = shininess constant
+	      double alpha = 20;
+	      double spec = is * material->ks * pow(scale, alpha);
+	      Is += spec;
+      }
     }
   }
+
+ 
 
   //final color
   color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
