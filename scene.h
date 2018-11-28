@@ -9,9 +9,9 @@
 //    Maarten Everts
 //    Jasper van de Gronde
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #ifndef SCENE_H_KNBLQLP6
@@ -31,7 +31,9 @@ private:
     Triple eye;
 public:
     Color trace(const Ray &ray);
+  Color normalsTrace(const Ray &ray);
     void render(Image &img);
+  void renderNormals(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);

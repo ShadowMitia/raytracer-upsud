@@ -7,9 +7,9 @@
 //
 //  Author: Maarten Everts
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #include "raytracer.h"
@@ -40,14 +40,14 @@ Triple parseTriple(const YAML::Node& node)
     Triple t;
     node[0] >> t.x;
     node[1] >> t.y;
-    node[2] >> t.z;	
+    node[2] >> t.z;
     return t;
 }
 
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
     Material *m = new Material();
-    node["color"] >> m->color;	
+    node["color"] >> m->color;
     node["ka"] >> m->ka;
     node["kd"] >> m->kd;
     node["ks"] >> m->ks;
@@ -66,7 +66,7 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["position"] >> pos;
         double r;
         node["radius"] >> r;
-        Sphere *sphere = new Sphere(pos,r);		
+        Sphere *sphere = new Sphere(pos,r);
         returnObject = sphere;
     }
 
@@ -153,7 +153,7 @@ void Raytracer::renderToFile(const std::string& outputFilename)
 {
     Image img(400,400);
     cout << "Tracing..." << endl;
-    scene->render(img);
+    scene->renderNormals(img);
     cout << "Writing image to " << outputFilename << "..." << endl;
     img.write_png(outputFilename.c_str());
     cout << "Done." << endl;

@@ -19,6 +19,31 @@
 #include "scene.h"
 #include "material.h"
 
+Color Scene::normalsTrace(const Ray& ray) {
+  // Find hit object and distance
+  Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
+  Object *obj = NULL;
+  for (unsigned int i = 0; i < objects.size(); ++i) {
+    Hit hit(objects[i]->intersect(ray));
+    if (hit.t<min_hit.t) {
+      min_hit = hit;
+      obj = objects[i];
+    }
+  }
+
+  // No hit? Return background color.
+  if (!obj) return Color(0.0, 0.0, 0.0);
+
+  Material *material = obj->material;            //the hit objects material
+  Point hit = ray.at(min_hit.t);                 //the hit point
+  Vector N = min_hit.N;                          //the normal at hit point
+  Vector V = -ray.D;                             //the view vector
+
+  N += Vector(1.0, 1.0, 1.0);
+  N.normalize();
+  return N;
+}
+
 Color Scene::trace(const Ray &ray)
 {
   // Find hit object and distance
@@ -78,7 +103,7 @@ Color Scene::trace(const Ray &ray)
     //Diffuse
     double id = 1;
     double diff = id * material->kd * L.dot(N);
-   
+
     //If cosinus is negative (in the shadow area) then the diff isn't taken into account
     if(diff > 0){
       Id += diff;
@@ -89,17 +114,17 @@ Color Scene::trace(const Ray &ray)
       double is = 1;
       //scale = cosinus of angle between R and V
       double scale = R.dot(V);
-      //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account 
+      //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
       if(scale > 0){
-	      //alpha = shininess constant
-	      double alpha = 20;
-	      double spec = is * material->ks * pow(scale, alpha);
-	      Is += spec;
+        //alpha = shininess constant
+        double alpha = 20;
+        double spec = is * material->ks * pow(scale, alpha);
+        Is += spec;
       }
     }
   }
 
- 
+
 
   //final color
   color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
@@ -116,6 +141,20 @@ void Scene::render(Image &img)
       Point pixel(x+0.5, h-1-y+0.5, 0);
       Ray ray(eye, (pixel-eye).normalized());
       Color col = trace(ray);
+      col.clamp();
+      img(x,y) = col;
+    }
+  }
+}
+
+void Scene::renderNormals(Image &img) {
+  int w = img.width();
+  int h = img.height();
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
+      Point pixel(x+0.5, h-1-y+0.5, 0);
+      Ray ray(eye, (pixel-eye).normalized());
+      Color col = normalsTrace(ray);
       col.clamp();
       img(x,y) = col;
     }
