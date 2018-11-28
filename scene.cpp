@@ -19,7 +19,41 @@
 #include "scene.h"
 #include "material.h"
 
-Color Scene::normalsTrace(const Ray& ray) {
+void Scene::computeNearFar()
+{
+  if(objects.size() != 0){
+    far = objects[0]->far(eye);
+    near = objects[0]->near(eye);
+
+    for (unsigned int i = 1; i < objects.size(); ++i) {
+	    if(objects[i]->far(eye)>far){
+	    	far = objects[i]->far(eye);
+	    }
+	    if(objects[i]->near(eye)<near){
+	    	near = objects[i]->near(eye);
+	    }
+    }
+    far = far * 1.3;
+  }
+}
+
+double Scene::getNear()
+{
+   if (near == far ){
+	computeNearFar();
+   }
+   return near;
+}
+
+double Scene::getFar()
+{
+   if (near == far ){
+	computeNearFar();
+   }
+   return far;
+}
+
+/*Color Scene::normalsTrace(const Ray& ray) {
   // Find hit object and distance
   Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
   Object *obj = NULL;
@@ -42,7 +76,7 @@ Color Scene::normalsTrace(const Ray& ray) {
   N += Vector(1.0, 1.0, 1.0);
   N.normalize();
   return N;
-}
+}*/
 
 Color Scene::trace(const Ray &ray)
 {
@@ -86,48 +120,77 @@ Color Scene::trace(const Ray &ray)
 
   Color color = material->color;                  // place holder
 
-  //Reflected intensities
-  double Id = 0;
-  double Is = 0;
-  double Ia = 0;
+  /*
+   *	Phong illumination
+   */
 
-  //Ambiant
-  double ia = 1;
-  Ia = ia * material->ka;
-  N.normalize();
+  //If the rendering mode is "phong"
+  if(rendering == "phong"){
+	//Reflected intensities
+	double Id = 0;
+	double Is = 0;
+	double Ia = 0;
+	//Ambiant
+	Ia = material->ka;
+	N.normalize();
 
-  for( size_t i = 0; i < lights.size() ; ++i){
-    //Hit to light vector
-    Vector L = lights[i]->position - hit;
-    L.normalize();
-    //Diffuse
-    double id = 1;
-    double diff = id * material->kd * L.dot(N);
+	for( size_t i = 0; i < lights.size() ; ++i){
+		//Hit to light vector
+		Vector L = lights[i]->position - hit;
+		L.normalize();
+		//Diffuse
+		double diff = material->kd * L.dot(N);	  
+ 
+		//If cosinus is negative (in the shadow area) then the diff isn't taken into account
+		if(diff > 0){
+			Id += diff;
+			//Vector of reflected light
+			Vector R = (2 * N.dot(L) * N) - L;
+			R.normalize();
+			//cosRV = cosinus of angle between R and V
+			double cosRV = R.dot(V);
 
-    //If cosinus is negative (in the shadow area) then the diff isn't taken into account
-    if(diff > 0){
-      Id += diff;
-      //Vector of reflected light
-      Vector R = (2 * N.dot(L) * N) - L;
-      R.normalize();
-      //Specular
-      double is = 1;
-      //scale = cosinus of angle between R and V
-      double scale = R.dot(V);
-      //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
-      if(scale > 0){
-        //alpha = shininess constant
-        double alpha = 20;
-        double spec = is * material->ks * pow(scale, alpha);
-        Is += spec;
-      }
-    }
+			//If cosinus is negative (at the opposite of the view) then the spec isn't taken into account 
+			if(cosRV > 0){
+				//Specular
+				double spec = material->ks * pow(cosRV, material->n);
+				Is += spec;
+			}
+		}
+	} 
+	//final color
+	color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
   }
 
 
+  /*
+   *	z-buffer
+   */
 
-  //final color
-  color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
+  //If the rendering mode is "zbuffer"
+  if(rendering == "zbuffer"){
+	//distance on z axis between the eye and the intersection point
+	double z = sqrt((min_hit.t * min_hit.t) - (eye.y - hit.y) * (eye.y - hit.y) - (eye.x - hit.x) * (eye.x - hit.x));
+	//The range of depth values between -1 and 1
+	double zp = ( ( getFar() + getNear() ) / ( getFar() - getNear() ) ) 
+                    + 
+		    ( (1/z) * ( ( -2 * getFar() * getNear() ) / ( getFar() - getNear() ) ) );
+	//The gray level representing the depth value
+	double grayLev = 1 -( (zp + 1)/2);
+	color.set(grayLev);	
+  }
+
+
+  /*
+   *	normal
+   */
+
+  //If the rendering mode is "normal"
+  if(rendering == "normal"){
+	N += Vector(1.0, 1.0, 1.0);
+	N.normalize();
+	color = N;
+  }
 
   return color;
 }
@@ -141,20 +204,6 @@ void Scene::render(Image &img)
       Point pixel(x+0.5, h-1-y+0.5, 0);
       Ray ray(eye, (pixel-eye).normalized());
       Color col = trace(ray);
-      col.clamp();
-      img(x,y) = col;
-    }
-  }
-}
-
-void Scene::renderNormals(Image &img) {
-  int w = img.width();
-  int h = img.height();
-  for (int y = 0; y < h; y++) {
-    for (int x = 0; x < w; x++) {
-      Point pixel(x+0.5, h-1-y+0.5, 0);
-      Ray ray(eye, (pixel-eye).normalized());
-      Color col = normalsTrace(ray);
       col.clamp();
       img(x,y) = col;
     }
@@ -175,3 +224,12 @@ void Scene::setEye(Triple e)
 {
   eye = e;
 }
+
+void Scene::setRendering(std::string r){
+  rendering = r;
+}
+
+std::string Scene::getRendering(){
+  return rendering;
+}
+

@@ -29,6 +29,10 @@ public:
     virtual ~Object() { }
 
     virtual Hit intersect(const Ray &ray) = 0;
+
+    virtual double near(Triple eye) = 0;
+
+    virtual double far(Triple eye) = 0;
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */

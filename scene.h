@@ -29,16 +29,22 @@ private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
+    std::string rendering;
+    double near = 0;
+    double far = 0;
 public:
     Color trace(const Ray &ray);
-  Color normalsTrace(const Ray &ray);
     void render(Image &img);
-  void renderNormals(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
+    void setRendering(std::string r);
+    std::string getRendering();
+    void computeNearFar();
+    double getNear();
+    double getFar();
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */
