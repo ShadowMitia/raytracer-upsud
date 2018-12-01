@@ -186,10 +186,10 @@ Color Scene::trace(const Ray &ray)
    */
 
   //If the rendering mode is "normal"
-  if(rendering == "normal"){
-  N += Vector(1.0, 1.0, 1.0);
-  N.normalize();
-  color = N;
+  if(rendering == "normal") {
+    N += Vector(1.0, 1.0, 1.0);
+    N /= 2;
+    color = N;
   }
 
   return color;

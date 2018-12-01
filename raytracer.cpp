@@ -127,16 +127,16 @@ bool Raytracer::readScene(const std::string& inputFilename)
             parser.GetNextDocument(doc);
 
 
-	    if(doc.FindValue("RenderMode")){
-		    // Read and set scene Rendering to RenderMode directive's value
-		    scene->setRendering(parseRendering(doc["RenderMode"]));
-		    
-	    }else{
-		// If no renderingMode directive found then set rendering to Phong by default 
-		const char* phong = "phong";
-		std::string str(phong);
-		scene->setRendering(str);
-	    }
+      if(doc.FindValue("RenderMode")){
+        // Read and set scene Rendering to RenderMode directive's value
+        scene->setRendering(parseRendering(doc["RenderMode"]));
+
+      }else{
+    // If no renderingMode directive found then set rendering to Phong by default
+        const char* phong = "phong";
+        std::string str(phong);
+        scene->setRendering(str);
+      }
 
 
             // Read scene configuration options
