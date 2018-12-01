@@ -26,6 +26,10 @@ public:
 
     virtual Hit intersect(const Ray &ray);
 
+    virtual double near(Triple eye);
+
+    virtual double far(Triple eye);
+
     const Point position;
     const double r;
 };

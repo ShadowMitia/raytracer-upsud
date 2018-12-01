@@ -74,3 +74,15 @@ Hit Sphere::intersect(const Ray &ray)
 
   return Hit(t,N);
 }
+
+double Sphere::near(Triple eye)
+{
+	double d = abs(eye.z - position.z);
+	return  d - r;
+}
+
+double Sphere::far(Triple eye)
+{
+	double d = abs(eye.z - position.z);
+	return d + r;
+}
