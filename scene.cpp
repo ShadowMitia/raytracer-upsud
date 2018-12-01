@@ -180,7 +180,6 @@ Color Scene::trace(const Ray &ray)
   color.set(grayLev);
   }
 
-
   /*
    *	normal
    */
