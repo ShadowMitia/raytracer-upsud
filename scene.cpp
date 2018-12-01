@@ -148,6 +148,7 @@ void Scene::render(Image &img)
 }
 
 void Scene::renderNormals(Image &img) {
+
   int w = img.width();
   int h = img.height();
   for (int y = 0; y < h; y++) {

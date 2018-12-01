@@ -15,6 +15,7 @@
 #include "raytracer.h"
 #include "object.h"
 #include "sphere.h"
+#include "torus.h"
 #include "material.h"
 #include "light.h"
 #include "image.h"
@@ -68,6 +69,15 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         node["radius"] >> r;
         Sphere *sphere = new Sphere(pos,r);
         returnObject = sphere;
+    } else if (objectType == "torus") {
+      Point pos;
+      node["position"] >> pos;
+      double r;
+      node["radius"] >> r;
+      double R;
+      node["Radius"] >> R;
+      Torus *torus = new Torus(pos,r,R);
+      returnObject = torus;
     }
 
     if (returnObject) {
@@ -153,7 +163,7 @@ void Raytracer::renderToFile(const std::string& outputFilename)
 {
     Image img(400,400);
     cout << "Tracing..." << endl;
-    scene->renderNormals(img);
+    scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;
     img.write_png(outputFilename.c_str());
     cout << "Done." << endl;
