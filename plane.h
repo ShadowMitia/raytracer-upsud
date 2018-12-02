@@ -14,8 +14,8 @@
 //  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
 //
 
-#ifndef BOX_H_115209AE
-#define BOX_H_115209AE
+#ifndef PLANE_H_115209AE
+#define PLANE_H_115209AE
 
 #include "object.h"
 
@@ -38,4 +38,4 @@ public:
 };
 
 
-#endif /* end of include guard: BOX_H_115209AE */
+#endif /* end of include guard: PLANE_H_115209AE */
