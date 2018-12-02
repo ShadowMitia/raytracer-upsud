@@ -48,18 +48,18 @@ Objects:
     kd: 0.7
     ks: 0.8
     n: 32
-- type: plane
-  normal: [140,220,400]
-  distance: 10
+- type: sphere
+  position: [140,220,400]
+  radius: 50
   material: # yellow
     color: [1.0,0.8,0.0]
     ka: 0.2
     kd: 0.8
     ks: 0.0
     n: 1
-- type: plane
-  normal: [110,130,200]
-  distance: 50
+- type: sphere
+  position: [110,130,200]
+  radius: 50
   material: # orange
     color: [1.0,0.5,0.0]
     ka: 0.2
