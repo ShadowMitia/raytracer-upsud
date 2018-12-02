@@ -70,14 +70,6 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Sphere *sphere = new Sphere(pos,r);
         returnObject = sphere;
     } else if (objectType == "plane") {
-      Vector v1;
-      node["v1"] >> v1;
-      Vector v2;
-      node["v2"] >> v2;
-      Plane* plane = new Plane(v1, v2);
-      returnObject = plane;
-    }
-    if (objectType == "plane") {
         Point normal;
         node["normal"] >> normal;
         double to;
