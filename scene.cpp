@@ -78,7 +78,7 @@ double Scene::getFar()
   return N;
 }*/
 
-Color Scene::trace(const Ray &ray)
+Color Scene::trace(const Ray &ray, int recDepth)
 {
   // Find hit object and distance
   Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
@@ -128,8 +128,12 @@ Color Scene::trace(const Ray &ray)
   if(rendering == "phong"){
   //Reflected intensities
   double Id = 0;
-  double Is = 0;
   double Ia = 0;
+  //Specular color
+  Color cs = Color(0.0, 0.0, 0.0);
+  //Reflection color
+  Color cr = Color(0.0, 0.0, 0.0);
+
   //Ambiant
   Ia = material->ka;
   N.normalize();
@@ -154,14 +158,21 @@ Color Scene::trace(const Ray &ray)
       if(cosRV > 0){
         //Specular
         double spec = material->ks * pow(cosRV, material->n);
-        Is += spec;
+        cs += lights[i]->color * spec;    
       }
     }
   }
-  //final color
-  color = ((Ia + Id) * color + Is * Color(1.0, 1.0, 1.0));
+ if(recDepth > 0){
+      //Vector of reflected light
+      Vector RR =  (2 * N.dot(ray.D) * N) - ray.D ;
+      RR.normalize();     
+      Ray rray(hit, -RR);
+      cr = trace(rray, recDepth - 1);
+	     
   }
-
+  //final color
+  color = ((Ia + Id) * color ) + cs + cr * material->ks;
+  }
 
   /*
    *	z-buffer
@@ -202,7 +213,7 @@ void Scene::render(Image &img)
     for (int x = 0; x < w; x++) {
       Point pixel(x+0.5, h-1-y+0.5, 0);
       Ray ray(eye, (pixel-eye).normalized());
-      Color col = trace(ray);
+      Color col = trace(ray, getRecDepth());
       col.clamp();
       img(x,y) = col;
     }
@@ -230,4 +241,12 @@ void Scene::setRendering(std::string r){
 
 std::string Scene::getRendering(){
   return rendering;
+}
+
+void Scene::setRecDepth(double r){
+  RecDepth = r;
+}
+
+double Scene::getRecDepth(){
+  return RecDepth;
 }

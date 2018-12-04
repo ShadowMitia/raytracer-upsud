@@ -47,7 +47,7 @@ Hit Sphere::intersect(const Ray &ray)
   //Distance between C and ray
   double distance = (OC - (  (OC.dot(ray.D)/ray.D.dot(ray.D)) *ray.D ) ).length();
 
-  if (distance > r) {
+  if (distance > r || distance < 0) {
     return Hit::NO_HIT();
   }
   //Distance of the projection of C on the ray from the ray origin
@@ -57,6 +57,17 @@ Hit Sphere::intersect(const Ray &ray)
   //Distance of the intersection point from the ray origin
   double t = tco - tcp;
 
+  //To avoid same point as intersection
+  if ( t < 1 ) { 
+    return Hit::NO_HIT();
+  }
+
+  Vector CP = (ray.O + t * ray.D) - position;  
+  double rprime = CP.dot(CP);
+  //To avoid intersection point behind the ray.O
+  if(rprime > r*r + 1 || rprime < r*r - 1){
+       return Hit::NO_HIT();
+  }
   /****************************************************
    * RT1.2: NORMAL CALCULATION
    *

@@ -32,8 +32,9 @@ private:
     std::string rendering;
     double near = 0;
     double far = 0;
+    double RecDepth = 0;
 public:
-    Color trace(const Ray &ray);
+    Color trace(const Ray &ray, int recDepth);
     void render(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
@@ -45,6 +46,8 @@ public:
     void computeNearFar();
     double getNear();
     double getFar();
+    void setRecDepth(double r);
+    double getRecDepth();
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

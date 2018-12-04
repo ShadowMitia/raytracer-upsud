@@ -103,6 +103,13 @@ std::string Raytracer::parseRendering(const YAML::Node& node)
     return renderMode;
 }
 
+double Raytracer::parseRecDepth(const YAML::Node& node)
+{
+    double recDepth;
+    node >> recDepth;
+    return recDepth;
+}
+
 /*
 * Read a scene from file
 */
@@ -124,6 +131,10 @@ bool Raytracer::readScene(const std::string& inputFilename)
             YAML::Node doc;
             parser.GetNextDocument(doc);
 
+      if(doc.FindValue("MaxRecursionDepth")){
+        // Read and set recursion depth's value
+        scene->setRecDepth(parseRecDepth(doc["MaxRecursionDepth"]));
+      }
 
       if(doc.FindValue("RenderMode")){
         // Read and set scene Rendering to RenderMode directive's value
