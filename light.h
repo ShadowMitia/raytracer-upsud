@@ -10,9 +10,9 @@
 //    Jasper van de Gronde
 //    adjustment of Hit class by Olivier Wavrin
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #ifndef LIGHT_H_PG2BAJRA
@@ -53,7 +53,7 @@ public:
     double t;
     Vector N;
     bool no_hit;
-    
+
     Hit(const double t, const Vector &normal, bool nohit = false)
         : t(t), N(normal), no_hit(nohit)
     { }
