@@ -41,6 +41,7 @@ matrix:
 # to add several platforms to build matrix:
 platform:
   - x86
+  - x64
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
@@ -51,9 +52,6 @@ build:
   parallel: true                  # enable MSBuild parallel builds
   project: RayTracer.sln      # path to Visual Studio solution or project
 
-
-# to disable automatic builds
-#build: off
 
 #---------------------------------#
 #       tests configuration       #
@@ -67,6 +65,7 @@ artifacts:
 
   # pushing a single file
   - path: Debug/*
+  - path: Release/*
 
 
 #---------------------------------#
