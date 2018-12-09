@@ -126,19 +126,24 @@ Color Scene::trace(const Ray &ray, int recDepth)
 
   //If the rendering mode is "phong"
   if(rendering == "phong"){
+    Color c;
     //Reflected intensities
     double Id = 0;
     double Ia = 0;
+    Color cd = Color(0.0, 0.0, 0.0);
+    Color ca = Color(0.0, 0.0, 0.0);
     //Specular color
     Color cs = Color(0.0, 0.0, 0.0);
     //Reflection color
     Color cr = Color(0.0, 0.0, 0.0);
 
-    //Ambiant
-    Ia = material->ka;
-    N.normalize();
-
+   
     for( size_t i = 0; i < lights.size() ; ++i){
+      //Ambiant
+      Ia = material->ka;
+      ca += lights[i]->color * Ia;
+      N.normalize();
+
       //Hit to light vector
       Vector L = lights[i]->position - hit;
       L.normalize();
@@ -160,6 +165,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
       //If cosinus is negative (in the shadow area) then the diff isn't taken into account
       if(!hasHit && diff > 0){
         Id += diff;
+        cd += (lights[i]->color /2) *  Id;
         //Vector of reflected light
         Vector R = (2 * N.dot(L) * N) - L;
         R.normalize();
@@ -185,7 +191,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
     }
 
     //final color
-    color = ((Ia + Id) * color ) + cs + cr * material->ks;
+    color = (ca + cd) * color + (cs + cr) * material->ks;
   }
 
   /*
