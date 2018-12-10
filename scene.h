@@ -35,6 +35,7 @@ private:
 
   double RecDepth = 0;
   bool shadows = false;
+  int superSampling = 1;
 public:
     Color trace(const Ray &ray, int recDepth);
 
@@ -52,6 +53,7 @@ public:
     void setRecDepth(double r);
     double getRecDepth();
   void renderShadows(bool toggle) { shadows = toggle; }
+  void setSuperSampling(int value)  { superSampling = value; }
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

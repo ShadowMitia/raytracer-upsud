@@ -19,6 +19,7 @@
 #include "scene.h"
 #include "material.h"
 
+
 void Scene::computeNearFar()
 {
   if(objects.size() != 0){
@@ -137,7 +138,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
     //Reflection color
     Color cr = Color(0.0, 0.0, 0.0);
 
-   
+
     for( size_t i = 0; i < lights.size() ; ++i){
       //Ambiant
       Ia = material->ka;
@@ -227,17 +228,31 @@ Color Scene::trace(const Ray &ray, int recDepth)
 
 void Scene::render(Image &img)
 {
-  int w = img.width();
-  int h = img.height();
-  for (int y = 0; y < h; y++) {
-    for (int x = 0; x < w; x++) {
-      Point pixel(x+0.5, h-1-y+0.5, 0);
-      Ray ray(eye, (pixel-eye).normalized());
-      Color col = trace(ray, getRecDepth());
-      col.clamp();
-      img(x,y) = col;
+    int w = img.width();
+    int h = img.height();
+    for (int y = 0; y < h; y++) {
+      for (int x = 0; x < w; x++) {
+        Color averageColor;
+
+        for (int i = 0; i < superSampling; i++) {
+          for (int j = 0; j < superSampling; j++) {
+
+            float sampling = superSampling - 1 == 0 ? 1 : superSampling - 1;
+
+            float subPixelX = x + (i) * (1.0/(2.0*(sampling))) + (1.0/(2.0*superSampling));
+            float subPixelY = h - 1.0 - y + (j) * (1.0/(2.0*(sampling))) + (1.0/(2.0*superSampling));
+
+            Point pixel(subPixelX, subPixelY, 0);
+            Ray ray(eye, (pixel-eye).normalized());
+            Color col = trace(ray, getRecDepth());
+            averageColor += col;
+          }
+        }
+        averageColor /= superSampling * superSampling;
+        averageColor.clamp();
+        img(x,y) = averageColor;
+      }
     }
-  }
 }
 
 void Scene::addObject(Object *o)

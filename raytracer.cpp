@@ -131,6 +131,10 @@ bool Raytracer::readScene(const std::string& inputFilename)
       YAML::Node doc;
       parser.GetNextDocument(doc);
 
+      if (doc.FindValue("SuperSampling")) {
+        scene->setSuperSampling(doc["SuperSampling"]["factor"]);
+      }
+
       if(doc.FindValue("MaxRecursionDepth")){
         // Read and set recursion depth's value
         scene->setRecDepth(parseRecDepth(doc["MaxRecursionDepth"]));
