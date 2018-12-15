@@ -22,6 +22,7 @@
 #include "light.h"
 #include "object.h"
 #include "image.h"
+#include "camera.h"
 
 class Scene
 {
@@ -29,6 +30,7 @@ private:
     std::vector<Object*> objects;
     std::vector<Light*> lights;
     Triple eye;
+    Camera* camera;
     std::string rendering;
     double near = 0;
     double far = 0;
@@ -40,9 +42,14 @@ public:
     Color trace(const Ray &ray, int recDepth);
 
     void render(Image &img);
+    void renderEye(Image &img);
+    void renderCam(Image &img);
     void addObject(Object *o);
     void addLight(Light *l);
     void setEye(Triple e);
+    void setCamera(Camera *c);
+    double getWidth(){return camera->viewSize.x;}
+    double getHeight(){return camera->viewSize.y;};
     unsigned int getNumObjects() { return objects.size(); }
     unsigned int getNumLights() { return lights.size(); }
     void setRendering(std::string r);
@@ -54,6 +61,8 @@ public:
     double getRecDepth();
   void renderShadows(bool toggle) { shadows = toggle; }
   void setSuperSampling(int value)  { superSampling = value; }
+  bool withEye = false;
+  bool withCam = false;
 };
 
 #endif /* end of include guard: SCENE_H_KNBLQLP6 */

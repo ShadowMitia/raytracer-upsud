@@ -32,6 +32,7 @@ private:
     Light* parseLight(const YAML::Node& node);
     std::string parseRendering(const YAML::Node& node);
     double parseRecDepth(const YAML::Node& node);
+    Camera* parseCamera(const YAML::Node& node);
 
 public:
     Raytracer() { }

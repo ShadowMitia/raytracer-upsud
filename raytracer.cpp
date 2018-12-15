@@ -18,6 +18,7 @@
 #include "plane.h"
 #include "material.h"
 #include "light.h"
+#include "camera.h"
 #include "image.h"
 #include "yaml/yaml.h"
 #include <ctype.h>
@@ -30,10 +31,16 @@ Triple parseTriple(const YAML::Node& node);
 
 void operator >> (const YAML::Node& node, Triple& t)
 {
-  assert(node.size()==3);
-  node[0] >> t.x;
-  node[1] >> t.y;
-  node[2] >> t.z;
+  if(node.size()==3){
+    node[0] >> t.x;
+    node[1] >> t.y;
+    node[2] >> t.z;
+  }
+  else if(node.size()==2){
+    node[0] >> t.x;
+    node[1] >> t.y;
+    node[1] >> t.z;
+  }
 }
 
 Triple parseTriple(const YAML::Node& node)
@@ -84,6 +91,20 @@ Object* Raytracer::parseObject(const YAML::Node& node)
   }
 
   return returnObject;
+}
+
+Camera* Raytracer::parseCamera(const YAML::Node& node)
+{
+  Point eye; 
+  node["eye"] >> eye;
+  Point center;
+  node["center"] >> center;
+  Point up;
+  node["up"] >> up;
+  Point viewSize;
+  node["viewSize"] >> viewSize;  
+  Camera *returnCamera = new Camera(eye, center, up, viewSize);
+  return returnCamera;
 }
 
 Light* Raytracer::parseLight(const YAML::Node& node)
@@ -157,10 +178,18 @@ bool Raytracer::readScene(const std::string& inputFilename)
         scene->renderShadows(false);
       }
 
-      // Read scene configuration options
-      scene->setEye(parseTriple(doc["Eye"]));
+      if(doc.FindValue("Camera")){
+        scene->setCamera(parseCamera(doc["Camera"]));
+        scene->withCam = true;
 
-      // Read and parse the scene objects
+      }
+
+      if(doc.FindValue("Eye")){
+        scene->setEye(parseTriple(doc["Eye"]));
+        scene->withEye = true;
+      }
+
+     // Read and parse the scene objects
       const YAML::Node& sceneObjects = doc["Objects"];
       if (sceneObjects.GetType() != YAML::CT_SEQUENCE) {
         cerr << "Error: expected a sequence of objects." << endl;
@@ -200,10 +229,19 @@ bool Raytracer::readScene(const std::string& inputFilename)
 
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
-  Image img(400,400);
-  cout << "Tracing..." << endl;
-  scene->render(img);
-  cout << "Writing image to " << outputFilename << "..." << endl;
-  img.write_png(outputFilename.c_str());
-  cout << "Done." << endl;
+  if(scene->withCam){
+    Image img(scene->getWidth(),scene->getHeight());
+    cout << "Tracing..." << endl;
+    scene->render(img);
+    cout << "Writing image to " << outputFilename << "..." << endl;
+    img.write_png(outputFilename.c_str());
+    cout << "Done." << endl;
+  }else{
+    Image img(400,400); 
+    cout << "Tracing..." << endl;
+    scene->render(img);
+    cout << "Writing image to " << outputFilename << "..." << endl;
+    img.write_png(outputFilename.c_str());
+    cout << "Done." << endl;
+  }
 }
