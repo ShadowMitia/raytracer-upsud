@@ -237,18 +237,23 @@ void Scene::render(Image &img)
         for (int i = 0; i < superSampling; i++) {
           for (int j = 0; j < superSampling; j++) {
 
-            float sampling = superSampling - 1 == 0 ? 1 : superSampling - 1;
+            float sample = (superSampling+1)/2;
+            float sampling = 1.0 / (2.0 * sample);
 
-            float subPixelX = x + (i) * (1.0/(2.0*(sampling))) + (1.0/(2.0*superSampling));
-            float subPixelY = h - 1.0 - y + (j) * (1.0/(2.0*(sampling))) + (1.0/(2.0*superSampling));
+            float subPixelX = x + sampling + i * 2.0 * sampling;
+            float subPixelY = h - 1.0 - y + sampling + j * 2.0 * sampling;
+
+            //cout << subPixelX << " " << subPixelY << "\n";
 
             Point pixel(subPixelX, subPixelY, 0);
             Ray ray(eye, (pixel-eye).normalized());
             Color col = trace(ray, getRecDepth());
+            //col.clamp();
             averageColor += col;
           }
         }
-        averageColor /= superSampling * superSampling;
+
+        averageColor /= (superSampling) * (superSampling);
         averageColor.clamp();
         img(x,y) = averageColor;
       }
