@@ -1,3 +1,6 @@
+Virginie Touchais
+Dimitri Belopopsky
+
 # Lab session 1 : Raycasting & Phong illumination
 
 
@@ -75,6 +78,33 @@ raytracer/sphere.cpp
 ### Added files:
 raytracer/scene01-reflect-lights-shadows.yaml
 raytracer/scene-withPingu.yaml
+
+
+
+# Lab session 4 : Anti-aliasing & Extended Camera Model
+
+
+### Edited files:
+raytracer/raytracer.cpp
+    Add of parseCamera function
+    Modicfication in the readScene function to read Camera's parameters and set the camera of the scene
+raytracer/raytracer.h
+    Add of parseCamera prototype
+raytracer/scene.cpp
+    Add of renderEye, renderCam and setCamera functions
+    Modification in the render function to use either eye or camera rendering
+raytracer/scene.h
+    Add of camera private attribute
+    Add of withEye and withCam public attribute
+    Add of renderEye, renderCam, setCamera, getWidth and getHeight prototypes
+
+### Added files:
+raytracer/camera.cpp
+	/camera.h
+	Camera class, which respresents the camera used to view the scene.
+raytracer/scene01-camera-ss-reflect-lights-shadows.yaml
+raytracer/scene01-zoom-ss-reflect-lights-shadows.yaml
+
 
 
 Raytracer C++ framework for "Introduction to Computer Graphics"
