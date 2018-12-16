@@ -89,7 +89,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
     if (hit.t<min_hit.t) {
       min_hit = hit;
       obj = objects[i];
-    }
+}
   }
 
   // No hit? Return background color.
@@ -166,29 +166,31 @@ Color Scene::trace(const Ray &ray, int recDepth)
       //If cosinus is negative (in the shadow area) then the diff isn't taken into account
       if(!hasHit && diff > 0){
         Id += diff;
-        cd += (lights[i]->color /2) *  Id;
+        cd += (lights[i]->color) *  Id;
         //Vector of reflected light
         Vector R = (2 * N.dot(L) * N) - L;
         R.normalize();
         //cosRV = cosinus of angle between R and V
         double cosRV = R.dot(V);
 
+        Vector H = L+V;
+        H.normalize();
+
         //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
         if(cosRV > 0){
           //Specular
-          double spec = material->ks * pow(cosRV, material->n);
+          double spec = material->ks * pow(H.dot(N), material->n);
           cs += lights[i]->color * spec;
         }
       }
     }
 
-    if(recDepth > 0){
+    if(recDepth > 0) {
       //Vector of reflected light
-      Vector RR =  (2 * N.dot(ray.D) * N) - ray.D ;
+      Vector RR =  (2.0 * N.dot(ray.D) * N) - ray.D;
       RR.normalize();
       Ray rray(hit, -RR);
-      cr = trace(rray, recDepth - 1);
-
+      cr = trace(rray, recDepth-1);
     }
 
     //final color
