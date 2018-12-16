@@ -179,7 +179,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
         //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
         if(cosRV > 0){
           //Specular
-          double spec = material->ks * pow(H.dot(N), material->n);
+          double spec = material->ks * pow(cosRV, material->n);
           cs += lights[i]->color * spec;
         }
       }
@@ -250,7 +250,7 @@ void Scene::renderEye(Image &img)
             Point pixel(subPixelX, subPixelY, 0);
             Ray ray(eye, (pixel-eye).normalized());
             Color col = trace(ray, getRecDepth());
-            //col.clamp(); 
+            //col.clamp();
             averageColor += col;
           }
         }
