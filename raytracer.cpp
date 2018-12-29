@@ -95,14 +95,14 @@ Object* Raytracer::parseObject(const YAML::Node& node)
 
 Camera* Raytracer::parseCamera(const YAML::Node& node)
 {
-  Point eye; 
+  Point eye;
   node["eye"] >> eye;
   Point center;
   node["center"] >> center;
   Point up;
   node["up"] >> up;
   Point viewSize;
-  node["viewSize"] >> viewSize;  
+  node["viewSize"] >> viewSize;
   Camera *returnCamera = new Camera(eye, center, up, viewSize);
   return returnCamera;
 }
@@ -126,9 +126,9 @@ std::string Raytracer::parseRendering(const YAML::Node& node)
 
 double Raytracer::parseRecDepth(const YAML::Node& node)
 {
-    double recDepth;
-    node >> recDepth;
-    return recDepth;
+  double recDepth;
+  node >> recDepth;
+  return recDepth;
 }
 
 /*
@@ -152,6 +152,12 @@ bool Raytracer::readScene(const std::string& inputFilename)
       YAML::Node doc;
       parser.GetNextDocument(doc);
 
+      if (doc.FindValue("GoochParameters")) {
+            scene->setGoochParameters(
+                doc["GoochParameters"]["alpha"], doc["GoochParameters"]["beta"],
+                doc["GoochParameters"]["b"], doc["GoochParameters"]["y"]);
+      }
+
       if (doc.FindValue("SuperSampling")) {
         scene->setSuperSampling(doc["SuperSampling"]["factor"]);
       }
@@ -164,8 +170,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
       if(doc.FindValue("RenderMode")){
         // Read and set scene Rendering to RenderMode directive's value
         scene->setRendering(parseRendering(doc["RenderMode"]));
-
-      }else{
+      } else{
         // If no renderingMode directive found then set rendering to Phong by default
         const char* phong = "phong";
         std::string str(phong);
@@ -189,7 +194,7 @@ bool Raytracer::readScene(const std::string& inputFilename)
         scene->withEye = true;
       }
 
-     // Read and parse the scene objects
+      // Read and parse the scene objects
       const YAML::Node& sceneObjects = doc["Objects"];
       if (sceneObjects.GetType() != YAML::CT_SEQUENCE) {
         cerr << "Error: expected a sequence of objects." << endl;
@@ -230,14 +235,14 @@ bool Raytracer::readScene(const std::string& inputFilename)
 void Raytracer::renderToFile(const std::string& outputFilename)
 {
   if(scene->withCam){
-    Image img(scene->getWidth(),scene->getHeight());
+    Image img(static_cast<int>(scene->getWidth()),static_cast<int>(scene->getHeight()));
     cout << "Tracing..." << endl;
     scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;
     img.write_png(outputFilename.c_str());
     cout << "Done." << endl;
   }else{
-    Image img(400,400); 
+    Image img(400,400);
     cout << "Tracing..." << endl;
     scene->render(img);
     cout << "Writing image to " << outputFilename << "..." << endl;

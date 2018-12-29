@@ -58,14 +58,14 @@ Hit Sphere::intersect(const Ray &ray)
   double t = tco - tcp;
 
   //To avoid same point as intersection
-  if ( t < 1 ) { 
+  if ( t < 1 ) {
     return Hit::NO_HIT();
   }
 
-  Vector CP = (ray.O + t * ray.D) - position;  
+  Vector CP = (ray.O + t * ray.D) - position;
   double rprime = CP.dot(CP);
   //To avoid intersection point behind the ray.O
-  if(rprime > r*r + 1 || rprime < r*r - 1){
+  if(rprime > r*r + 1.0 || rprime < r*r - 1.0){
        return Hit::NO_HIT();
   }
   /****************************************************
@@ -88,12 +88,12 @@ Hit Sphere::intersect(const Ray &ray)
 
 double Sphere::near(Triple eye)
 {
-	double d = abs(eye.z - position.z);
-	return  d - r;
+  double d = fabs(eye.z - position.z);
+  return  d - r;
 }
 
 double Sphere::far(Triple eye)
 {
-	double d = abs(eye.z - position.z);
-	return d + r;
+  double d = fabs(eye.z - position.z);
+  return d + r;
 }

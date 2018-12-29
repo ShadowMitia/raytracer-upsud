@@ -12,9 +12,14 @@
 #  The example scene description should largely speak for itself. By now
 #  it should be clear that the #-character can be used to insert comments.
 
-Eye: [200,200,1000]
-RenderMode: gooch
+Camera:
+    eye: [200,200,1000]
+    center: [200,200,0]
+    up: [0,0.75,0]
+    viewSize: [800, 400]
+
 Shadows: true
+MaxRecursionDepth: 2
 SuperSampling:
   factor: 4
 
@@ -26,51 +31,6 @@ Lights:
 
 Objects:
 - type: sphere
-  position: [100, 100, 100]
-  radius: 50
-  material:
-    color: [1.0, 1.0, 1.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.5
-    n: 64
-- type: sphere
-  position: [300, 100, 100]
-  radius: 50
-  material:
-    color: [1.0, 1.0, 1.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.5
-    n: 64
-- type: sphere
-  position: [100, 300, 100]
-  radius: 50
-  material:
-    color: [1.0, 1.0, 1.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.5
-    n: 64
-- type: sphere
-  position: [300, 300, 100]
-  radius: 50
-  material:
-    color: [1.0, 1.0, 1.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.5
-    n: 64
-- type: sphere
-  position: [150, 150, 150]
-  radius: 50
-  material:
-    color: [1.0, 1.0, 1.0]
-    ka: 0.2
-    kd: 0.7
-    ks: 0.5
-    n: 64
-- type: sphere
   position: [90,320,100]
   radius: 50
   material: # blue
@@ -81,7 +41,7 @@ Objects:
     n: 64
 - type: sphere
   position: [210,270,300]
-  radius: 100
+  radius: 50
   material: # green
     color: [0.0,1.0,0.0]
     ka: 0.2

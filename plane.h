@@ -9,9 +9,9 @@
 //    Maarten Everts
 //    Jasper van de Gronde
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #ifndef PLANE_H_115209AE
@@ -21,11 +21,11 @@
 
 class Plane : public Object
 {
-public: 
+public:
     // Plane described by:
     // - normal, defining the plane's orientation
-    // - to, the plane's distance from the world origin 
-    Plane(Point normal,double to) : normal(normal), to(to) { }
+    // - to, the plane's distance from the world origin
+    Plane(Point normal_,double to_) : normal(normal_), to(to_) { }
 
     virtual Hit intersect(const Ray &ray);
 

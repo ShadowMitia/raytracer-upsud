@@ -84,12 +84,12 @@ Color Scene::trace(const Ray &ray, int recDepth)
   // Find hit object and distance
   Hit min_hit(std::numeric_limits<double>::infinity(),Vector());
   Object *obj = NULL;
-  for (unsigned int i = 0; i < objects.size(); ++i) {
+  for (size_t i = 0; i < objects.size(); ++i) {
     Hit hit(objects[i]->intersect(ray));
     if (hit.t<min_hit.t) {
       min_hit = hit;
       obj = objects[i];
-}
+    }
   }
 
   // No hit? Return background color.
@@ -127,10 +127,9 @@ Color Scene::trace(const Ray &ray, int recDepth)
 
   //If the rendering mode is "phong"
   if(rendering == "phong"){
-    Color c;
     //Reflected intensities
-    double Id = 0;
-    double Ia = 0;
+    double Id = 0.0;
+    double Ia = 0.0;
     Color cd = Color(0.0, 0.0, 0.0);
     Color ca = Color(0.0, 0.0, 0.0);
     //Specular color
@@ -166,9 +165,9 @@ Color Scene::trace(const Ray &ray, int recDepth)
       //If cosinus is negative (in the shadow area) then the diff isn't taken into account
       if(!hasHit && diff > 0){
         Id += diff;
-        cd += (lights[i]->color) *  Id;
+        cd += (lights[i]->color / 2.0) *  Id;
         //Vector of reflected light
-        Vector R = (2 * N.dot(L) * N) - L;
+        Vector R = (2.0 * N.dot(L) * N) - L;
         R.normalize();
         //cosRV = cosinus of angle between R and V
         double cosRV = R.dot(V);
@@ -177,7 +176,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
         H.normalize();
 
         //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
-        if(cosRV > 0){
+        if(cosRV >= 0){
           //Specular
           double spec = material->ks * pow(cosRV, material->n);
           cs += lights[i]->color * spec;
@@ -208,9 +207,9 @@ Color Scene::trace(const Ray &ray, int recDepth)
     //The range of depth values between -1 and 1
     double zp = ( ( getFar() + getNear() ) / ( getFar() - getNear() ) )
       +
-      ( (1/z) * ( ( -2 * getFar() * getNear() ) / ( getFar() - getNear() ) ) );
+      ( (1.0/z) * ( ( -2.0 * getFar() * getNear() ) / ( getFar() - getNear() ) ) );
     //The gray level representing the depth value
-    double grayLev = 1 -( (zp + 1)/2);
+    double grayLev = 1.0 -( (zp + 1.0)/2.0);
     color.set(grayLev);
   }
 
@@ -221,8 +220,63 @@ Color Scene::trace(const Ray &ray, int recDepth)
   //If the rendering mode is "normal"
   if(rendering == "normal") {
     N += Vector(1.0, 1.0, 1.0);
-    N /= 2;
+    N /= 2.0;
     color = N;
+  }
+
+  if (rendering == "gooch") {
+    for( size_t i = 0; i < lights.size(); ++i){
+      Vector L = lights[i]->position - hit;
+      L.normalize();
+      N.normalize();
+
+
+      //Diffuse
+      double diff = material->kd * L.dot(N);
+
+      bool hasHit = false;
+
+      if (shadows) {
+        Ray lightRay(hit, L);
+
+        for (size_t j = 0; j < objects.size(); j++) {
+          Hit hit(objects[j]->intersect(lightRay));
+          if (!hit.no_hit) {
+            hasHit = true;
+          }
+        }
+      }
+
+      double Id = 0;
+      Color cd = Color(0, 0, 0);
+      Color cs = Color(0, 0, 0);
+
+      //If cosinus is negative (in the shadow area) then the diff isn't taken into account
+      if(!hasHit && diff > 0){
+        Id += diff;
+        cd += (lights[i]->color / 2.0) *  Id;
+        //Vector of reflected light
+        Vector R = (2.0 * N.dot(L) * N) - L;
+        R.normalize();
+        //cosRV = cosinus of angle between R and V
+        double cosRV = R.dot(V);
+
+        Vector H = L+V;
+        H.normalize();
+
+        //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
+        if(cosRV > 0) {
+          //Specular
+          double spec = material->ks * pow(cosRV, material->n);
+          cs += lights[i]->color * spec;
+        }
+      }
+      Color kd = lights[i]->color * material->color * material->kd;
+      Color kCool = Color(0, 0, b) + alpha * kd;
+      Color kWarm = Color(y, y, 0) + beta * kd;
+      color = kCool * (1.0 - N.dot(L)) / 2.0 + kWarm * (1.0 + N.dot(L)) / 2.0 + cs * material->ks ;
+      }
+
   }
 
   return color;
@@ -239,22 +293,21 @@ void Scene::renderEye(Image &img)
         for (int i = 0; i < superSampling; i++) {
           for (int j = 0; j < superSampling; j++) {
 
-            float sample = (superSampling+1)/2;
-            float sampling = 1.0 / (2.0 * sample);
+            double sample = (superSampling+1.0)/2.0;
+            double sampling = 1.0 / (2.0 * sample);
 
 
-           float subPixelX = x + sampling + i * 2.0 * sampling;
-           float subPixelY = h - 1.0 - y + sampling + j * 2.0 * sampling;
-
+           double subPixelX = x + sampling + i * 2.0 * sampling;
+           double subPixelY = h - 1.0 - y + sampling + j * 2.0 * sampling;
 
             Point pixel(subPixelX, subPixelY, 0);
             Ray ray(eye, (pixel-eye).normalized());
             Color col = trace(ray, getRecDepth());
-            //col.clamp();
+            col.clamp();
             averageColor += col;
           }
         }
-        averageColor /= (superSampling) * (superSampling);
+        averageColor /= static_cast<double>(superSampling * superSampling);
         averageColor.clamp();
         img(x,y) = averageColor;
       }
@@ -263,8 +316,8 @@ void Scene::renderEye(Image &img)
 
 void Scene::renderCam(Image &img)
 {
-  int w = img.width()/2;
-  int h = img.height()/2;
+  int w = img.width()/2.0;
+  int h = img.height()/2.0;
   Vector rayD;
   Vector A = ((camera->center - camera->eye).cross(camera->up)).normalized();
   Vector B = ((camera->center - camera->eye).cross(A)).normalized();
@@ -278,11 +331,11 @@ void Scene::renderCam(Image &img)
         for (int i = 0; i < superSampling; i++) {
           for (int j = 0; j < superSampling; j++) {
 
-            float sample = (superSampling+1)/2;
-            float sampling = 1.0 / (2.0 * sample);
+            double sample = (superSampling+1.0)/2.0;
+            double sampling = 1.0 / (2.0 * sample);
 
-           float subPixelX = x + sampling + i * 2.0 * sampling;
-           float subPixelY = y + sampling + j * 2.0 * sampling;
+           double subPixelX = x + sampling + i * 2.0 * sampling;
+           double subPixelY = y + sampling + j * 2.0 * sampling;
 
 
             rayD = ((camera->center - camera->eye)+(H*(subPixelX))+(V*(subPixelY))).normalized();
@@ -292,7 +345,7 @@ void Scene::renderCam(Image &img)
             averageColor += col;
            }
          }
-        averageColor /= superSampling * superSampling;
+        averageColor /= static_cast<double>(superSampling * superSampling);
         averageColor.clamp();
         img(x+w,y+h) = averageColor;
     }
