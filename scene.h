@@ -35,9 +35,16 @@ private:
     double near = 0;
     double far = 0;
 
-  double RecDepth = 0;
+  int RecDepth = 0;
   bool shadows = false;
   int superSampling = 1;
+
+  // gooch parameters
+  double alpha = 0.25;
+  double beta = 0.5;
+  double b = 0.55;
+  double y = 0.3;
+
 public:
     Color trace(const Ray &ray, int recDepth);
 
@@ -48,10 +55,16 @@ public:
     void addLight(Light *l);
     void setEye(Triple e);
     void setCamera(Camera *c);
+  void setGoochParameters(double alpha_, double beta_, double b_, double y_) {
+    alpha = alpha_;
+    beta = beta_;
+    b = b_;
+    y = y_;
+  }
     double getWidth(){return camera->viewSize.x;}
     double getHeight(){return camera->viewSize.y;};
-    unsigned int getNumObjects() { return objects.size(); }
-    unsigned int getNumLights() { return lights.size(); }
+  std::size_t getNumObjects() { return objects.size(); }
+  std::size_t getNumLights() { return lights.size(); }
     void setRendering(std::string r);
     std::string getRendering();
     void computeNearFar();

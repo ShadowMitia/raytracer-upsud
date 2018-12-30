@@ -9,9 +9,9 @@
 //    Maarten Everts
 //    Jasper van de Gronde
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #ifndef SPHERE_H_115209AE
@@ -22,7 +22,7 @@
 class Sphere : public Object
 {
 public:
-    Sphere(Point position,double r) : position(position), r(r) { }
+    Sphere(Point position_, double r_) : position(position_), r(r_) { }
 
     virtual Hit intersect(const Ray &ray);
 
