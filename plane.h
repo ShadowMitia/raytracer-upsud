@@ -35,6 +35,8 @@ public:
 
     const Point normal;
     const double to;
+
+    virtual Color getColor(Point hit);
 };
 
 

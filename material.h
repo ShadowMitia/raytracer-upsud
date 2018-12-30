@@ -22,6 +22,7 @@ class Material
 {
 public:
     Color color;        // base color
+    std::string texture;
     double ka;          // ambient intensity
     double kd;          // diffuse intensity
     double ks;          // specular intensity 

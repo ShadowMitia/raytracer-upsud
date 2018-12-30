@@ -18,11 +18,12 @@
 #define SPHERE_H_115209AE
 
 #include "object.h"
+#include "image.h"
 
 class Sphere : public Object
 {
 public:
-    Sphere(Point position_, double r_) : position(position_), r(r_) { }
+    Sphere(Point position_, double r_, double angle_, Triple vec_) : position(position_), r(r_), angle(angle_), vec(vec_) { }
 
     virtual Hit intersect(const Ray &ray);
 
@@ -32,6 +33,17 @@ public:
 
     const Point position;
     const double r;
+    double angle;
+    Triple vec;
+    Vector ve, vn, vne ;
+    Image *textureImage;
+    bool imageLoaded = false;
+
+    virtual Color mapping(Image *texture, Point hit);
+    virtual Color getColor(Point hit);
+    virtual Color UVMapping(Point hit);
+    virtual double getAngle (Vector v , Vector base, Vector normal); 
+    virtual void computeVeVn();
 };
 
 #endif /* end of include guard: SPHERE_H_115209AE */

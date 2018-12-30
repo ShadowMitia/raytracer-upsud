@@ -20,6 +20,8 @@
 #include "triple.h"
 #include "light.h"
 
+#include "material.h"
+
 class Material;
 
 class Object {
@@ -33,6 +35,8 @@ public:
     virtual double near(Triple eye) = 0;
 
     virtual double far(Triple eye) = 0;
+
+    virtual Color getColor(Point hit) = 0;
 };
 
 #endif /* end of include guard: OBJECT_H_AXKLE0OF */

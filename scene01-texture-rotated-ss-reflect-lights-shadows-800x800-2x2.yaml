@@ -16,12 +16,12 @@ Camera:
     eye: [200,200,1000]
     center: [200,200,0]
     up: [0,1,0]
-    viewSize: [800,800]
+    viewSize: [800, 800]
 
 Shadows: true
 MaxRecursionDepth: 2
 SuperSampling:
-  factor: 4
+  factor: 2
 
 Lights:
 - position: [-200,600,1500]
@@ -59,9 +59,10 @@ Objects:
     n: 32
 - type: sphere
   position: [140,220,400]
-  radius: 50
-  material: # yellow
-    color: [1.0,0.8,0.0]
+  radius: [50,[0,1,0.7]]
+  angle: 90
+  material:
+    texture: earth.png
     ka: 0.2
     kd: 0.8
     ks: 0
