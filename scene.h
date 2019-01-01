@@ -27,13 +27,13 @@
 class Scene
 {
 private:
-    std::vector<Object*> objects;
-    std::vector<Light*> lights;
-    Triple eye;
-    Camera* camera;
-    std::string rendering;
-    double near = 0;
-    double far = 0;
+  std::vector<Object*> objects;
+  std::vector<Light*> lights;
+  Triple eye;
+  Camera* camera;
+  std::string rendering;
+  double near = 0;
+  double far = 0;
 
   int RecDepth = 0;
   bool shadows = false;
@@ -46,32 +46,32 @@ private:
   double y = 0.3;
 
 public:
-    Color trace(const Ray &ray, int recDepth);
+  Color trace(const Ray &ray, int recDepth);
 
-    void render(Image &img);
-    void renderEye(Image &img);
-    void renderCam(Image &img);
-    void addObject(Object *o);
-    void addLight(Light *l);
-    void setEye(Triple e);
-    void setCamera(Camera *c);
+  void render(Image &img);
+  void renderEye(Image &img);
+  void renderCam(Image &img);
+  void addObject(Object *o);
+  void addLight(Light *l);
+  void setEye(Triple e);
+  void setCamera(Camera *c);
   void setGoochParameters(double alpha_, double beta_, double b_, double y_) {
     alpha = alpha_;
     beta = beta_;
     b = b_;
     y = y_;
   }
-    double getWidth(){return camera->viewSize.x;}
-    double getHeight(){return camera->viewSize.y;};
+  double getWidth(){return camera->viewSize.x;}
+  double getHeight(){return camera->viewSize.y;};
   std::size_t getNumObjects() { return objects.size(); }
   std::size_t getNumLights() { return lights.size(); }
-    void setRendering(std::string r);
-    std::string getRendering();
-    void computeNearFar();
-    double getNear();
-    double getFar();
-    void setRecDepth(double r);
-    double getRecDepth();
+  void setRendering(std::string r);
+  std::string getRendering();
+  void computeNearFar();
+  double getNear();
+  double getFar();
+  void setRecDepth(double r);
+  double getRecDepth();
   void renderShadows(bool toggle) { shadows = toggle; }
   void setSuperSampling(int value)  { superSampling = value; }
   bool withEye = false;

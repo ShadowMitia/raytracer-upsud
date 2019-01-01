@@ -229,8 +229,6 @@ Color Scene::trace(const Ray &ray, int recDepth)
       Vector L = lights[i]->position - hit;
       L.normalize();
       N.normalize();
-
-
       //Diffuse
       double diff = material->kd * L.dot(N);
 
@@ -250,9 +248,8 @@ Color Scene::trace(const Ray &ray, int recDepth)
       double Id = 0;
       Color cd = Color(0, 0, 0);
       Color cs = Color(0, 0, 0);
-
       //If cosinus is negative (in the shadow area) then the diff isn't taken into account
-      if(!hasHit && diff > 0){
+      if(!hasHit || min_hit.t < 1){
         Id += diff;
         cd += (lights[i]->color / 2.0) *  Id;
         //Vector of reflected light
@@ -271,12 +268,15 @@ Color Scene::trace(const Ray &ray, int recDepth)
           cs += lights[i]->color * spec;
         }
       }
+
       Color kd = lights[i]->color * material->color * material->kd;
       Color kCool = Color(0, 0, b) + alpha * kd;
       Color kWarm = Color(y, y, 0) + beta * kd;
-      color = kCool * (1.0 - N.dot(L)) / 2.0 + kWarm * (1.0 + N.dot(L)) / 2.0 + cs * material->ks ;
-      }
+      color = kCool * (1.0 - N.dot(L)) / 2.0 + kWarm * (1.0 + N.dot(L))/ 2.0 + cs * material->ks;
 
+
+
+    }
   }
 
   return color;
@@ -284,34 +284,33 @@ Color Scene::trace(const Ray &ray, int recDepth)
 
 void Scene::renderEye(Image &img)
 {
-    int w = img.width();
-    int h = img.height();
-    for (int y = 0; y < h; y++) {
-      for (int x = 0; x < w; x++) {
-        Color averageColor = Color(0.0, 0.0, 0.0);
+  int w = img.width();
+  int h = img.height();
+  for (int y = 0; y < h; y++) {
+    for (int x = 0; x < w; x++) {
+      Color averageColor = Color(0.0, 0.0, 0.0);
 
-        for (int i = 0; i < superSampling; i++) {
-          for (int j = 0; j < superSampling; j++) {
+      for (int i = 0; i < superSampling; i++) {
+        for (int j = 0; j < superSampling; j++) {
 
-            double sample = (superSampling+1.0)/2.0;
-            double sampling = 1.0 / (2.0 * sample);
+          double sample = (superSampling+1.0)/2.0;
+          double sampling = 1.0 / (2.0 * sample);
 
+          double subPixelX = x + sampling + i * 2.0 * sampling;
+          double subPixelY = h - 1.0 - y + sampling + j * 2.0 * sampling;
 
-           double subPixelX = x + sampling + i * 2.0 * sampling;
-           double subPixelY = h - 1.0 - y + sampling + j * 2.0 * sampling;
-
-            Point pixel(subPixelX, subPixelY, 0);
-            Ray ray(eye, (pixel-eye).normalized());
-            Color col = trace(ray, getRecDepth());
-            col.clamp();
-            averageColor += col;
-          }
+          Point pixel(subPixelX, subPixelY, 0);
+          Ray ray(eye, (pixel-eye).normalized());
+          Color col = trace(ray, getRecDepth());
+          col.clamp();
+          averageColor += col;
         }
-        averageColor /= static_cast<double>(superSampling * superSampling);
-        averageColor.clamp();
-        img(x,y) = averageColor;
       }
+      averageColor /= static_cast<double>(superSampling * superSampling);
+      averageColor.clamp();
+      img(x,y) = averageColor;
     }
+  }
 }
 
 void Scene::renderCam(Image &img)
@@ -326,42 +325,42 @@ void Scene::renderCam(Image &img)
   for (int y = -h ; y < h; y++) {
     for (int x = -w; x < w; x++) {
 
-        Color averageColor = Color(0.0, 0.0, 0.0);
+      Color averageColor = Color(0.0, 0.0, 0.0);
 
-        for (int i = 0; i < superSampling; i++) {
-          for (int j = 0; j < superSampling; j++) {
+      for (int i = 0; i < superSampling; i++) {
+        for (int j = 0; j < superSampling; j++) {
 
-            double sample = (superSampling+1.0)/2.0;
-            double sampling = 1.0 / (2.0 * sample);
+          double sample = (superSampling+1.0)/2.0;
+          double sampling = 1.0 / (2.0 * sample);
 
-           double subPixelX = x + sampling + i * 2.0 * sampling;
-           double subPixelY = y + sampling + j * 2.0 * sampling;
+          double subPixelX = x + sampling + i * 2.0 * sampling;
+          double subPixelY = y + sampling + j * 2.0 * sampling;
 
 
-            rayD = ((camera->center - camera->eye)+(H*(subPixelX))+(V*(subPixelY))).normalized();
-            Ray ray(camera->eye,rayD);
-            Color col = trace(ray, getRecDepth());
-            col.clamp();
-            averageColor += col;
-           }
-         }
-        averageColor /= static_cast<double>(superSampling * superSampling);
-        averageColor.clamp();
-        img(x+w,y+h) = averageColor;
+          rayD = ((camera->center - camera->eye)+(H*(subPixelX))+(V*(subPixelY))).normalized();
+          Ray ray(camera->eye,rayD);
+          Color col = trace(ray, getRecDepth());
+          col.clamp();
+          averageColor += col;
+        }
+      }
+      averageColor /= static_cast<double>(superSampling * superSampling);
+      averageColor.clamp();
+      img(x+w,y+h) = averageColor;
     }
   }
 }
 
 void Scene::render(Image &img)
 {
- if(withEye){
-   renderEye(img);
-   return ;
- }
- if(withCam){
-   renderCam(img);
-   return;
- }
+  if(withEye){
+    renderEye(img);
+    return;
+  }
+  if(withCam){
+    renderCam(img);
+    return;
+  }
 }
 
 void Scene::addObject(Object *o)
