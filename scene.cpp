@@ -119,7 +119,8 @@ Color Scene::trace(const Ray &ray, int recDepth)
    *        pow(a,b)           a to the power of b
    ****************************************************/
 
-  Color color = material->color;                  // place holder
+  //Color color = material->color;                  // place holder
+  Color color = obj->getColor(hit);              
 
   /*
    *	Phong illumination

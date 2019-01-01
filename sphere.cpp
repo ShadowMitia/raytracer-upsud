@@ -17,6 +17,8 @@
 //
 
 #include "sphere.h"
+#include "image.h"
+#include <string.h>
 #include <iostream>
 #include <math.h>
 
@@ -96,4 +98,125 @@ double Sphere::far(Triple eye)
 {
   double d = fabs(eye.z - position.z);
   return d + r;
+}
+
+
+Color Sphere::mapping(Image *texture, Point hit)
+{
+    double u;
+    Vector vp = hit - position;
+    vp.normalize();
+
+    //lattitude angle range 0-pi 
+    double phi = (vn.dot(vp));
+    phi = acos(phi);
+    double v = phi / M_PI;
+
+    //longiture angle on equator range 0-2pi
+    Vector vpp = vn.cross(vp).cross(vn);
+    vpp.normalize();
+    double theta =  getAngle ( vpp , ve , vne) ;
+    u = theta / ( 2 * M_PI);
+
+    Color color_res = texture->colorAt(u,v);
+    return color_res;
+}
+
+Vector rotate(Vector old, double ang, Vector dir)
+{
+   Vector t1 = cos(ang) * old;
+   Vector t2 = (1 - cos(ang)) * old.dot(dir) * dir;
+   Vector t3 = sin(ang) * dir.cross(old);
+   Vector rotated = t1 + t2 + t3 ;
+	
+   return rotated;	
+}
+
+double Sphere::getAngle ( Vector v , Vector base , Vector normal ) 
+{
+   double a = v.dot(base);
+   a = acos(a);
+   double s = v.dot(normal);
+   if ( s < 0 ){
+     a = ( 2 * M_PI ) - a ;
+   }
+   return ( a ) ;
+}
+
+
+void Sphere::computeVeVn()
+{
+   Vector XVec = Triple(1.0, 0.0, 0.0);
+   Vector YVec = Triple(0.0, 1.0, 0.0);
+   Vector ZVec = Triple(0.0, 0.0, 1.0);
+   vn = ZVec;
+   ve = XVec;
+   vne = YVec ;
+  
+   if ( angle != 0 ) {
+     ve = rotate(ve, ((angle * M_PI ) / 180), ZVec);
+     ve.normalize();
+   }
+   if(vec.x != 0.0 || vec.y != 0.0 ){
+     vec.normalize() ;
+     vne = ZVec.cross(vec) ;
+     vne.normalize() ;
+     vn = rotate(vn, getAngle ( vec , ZVec , vne) , vne);
+     vn.normalize();
+  }
+  vne = vn.cross(ve);
+  vne.normalize();
+  ve = vne.cross(vn);
+}
+
+Color Sphere::UVMapping(Point hit){
+
+    double u;
+    Vector vp = hit - position;
+    vp.normalize();
+
+    //lattitude angle range 0-pi 
+    double phi = (vn.dot(vp));
+    phi = acos(phi);
+    double v = phi / M_PI;
+
+    //longiture angle on equator range 0-2pi
+    Vector vpp = vn.cross(vp).cross(vn);
+    vpp.normalize();
+    double theta =  getAngle ( vpp , ve , vne) ;
+    u = theta / ( 2 * M_PI);
+
+    return Color(u, 0.0, v);
+}
+
+
+Color Sphere::getColor(Point hit)
+{
+
+   if(material->texture == ""){
+      return material->color;
+   }else{
+      if(!imageLoaded){
+	 if(strcmp ( material->texture.c_str() , "UV") == 0){
+	   Vector XVec = Triple(1.0, 0.0, 0.0);
+	   Vector YVec = Triple(0.0, 1.0, 0.0);
+	   Vector ZVec = Triple(0.0, 0.0, 1.0);
+	   vn = YVec;
+	   ve = XVec;
+	   vne = -ZVec ;
+         }else{		
+	   textureImage = new Image(material->texture.c_str());
+	   if(textureImage->width() == 0){
+	      std::cout << "!!! Impossible de lire l'image" << material->texture.c_str() << "\n";
+	   }
+	   computeVeVn();
+        }
+        imageLoaded = true;
+      }
+      if(strcmp ( material->texture.c_str() , "UV") == 0){
+         return UVMapping(hit);
+      }else{
+	 return mapping(textureImage, hit);
+      }
+   }
 }

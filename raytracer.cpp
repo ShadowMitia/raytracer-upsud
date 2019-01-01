@@ -55,7 +55,14 @@ Triple parseTriple(const YAML::Node& node)
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
   Material *m = new Material();
-  node["color"] >> m->color;
+  if(node.FindValue("color")){
+	node["color"] >> m->color;
+	m->texture = "";
+  }
+  if(node.FindValue("texture")){
+	node["texture"] >> m->texture;
+ 	m->color = Color(0.0,0.0,0.0); 
+  }
   node["ka"] >> m->ka;
   node["kd"] >> m->kd;
   node["ks"] >> m->ks;
@@ -73,8 +80,16 @@ Object* Raytracer::parseObject(const YAML::Node& node)
     Point pos;
     node["position"] >> pos;
     double r;
-    node["radius"] >> r;
-    Sphere *sphere = new Sphere(pos,r);
+    double angle = 0;
+    Triple vec = Triple(0.0, 0.0, 1.0);
+    if(node.FindValue("angle")){
+      node["angle"] >> angle;
+      node["radius"][0] >> r;
+      node["radius"][1] >> vec;
+    }else{
+      node["radius"] >> r;
+    }
+    Sphere *sphere = new Sphere(pos,r,angle,vec);
     returnObject = sphere;
   } else if (objectType == "plane") {
     Point normal;

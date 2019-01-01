@@ -61,3 +61,8 @@ double Plane::far(Triple eye)
   double d = abs(eye.z - normal.z);
   return d + to;
 }
+
+Color Plane::getColor(Point hit)
+{
+
+}
