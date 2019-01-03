@@ -20,7 +20,9 @@
 #include "image.h"
 #include <string.h>
 #include <iostream>
-#include <math.h>
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 
 /************************** Sphere **********************************/
 
@@ -107,7 +109,7 @@ Color Sphere::mapping(Image *texture, Point hit)
     Vector vp = hit - position;
     vp.normalize();
 
-    //lattitude angle range 0-pi 
+    //lattitude angle range 0-pi
     double phi = (vn.dot(vp));
     phi = acos(phi);
     double v = phi / M_PI;
@@ -128,11 +130,11 @@ Vector rotate(Vector old, double ang, Vector dir)
    Vector t2 = (1 - cos(ang)) * old.dot(dir) * dir;
    Vector t3 = sin(ang) * dir.cross(old);
    Vector rotated = t1 + t2 + t3 ;
-	
-   return rotated;	
+
+   return rotated;
 }
 
-double Sphere::getAngle ( Vector v , Vector base , Vector normal ) 
+double Sphere::getAngle ( Vector v , Vector base , Vector normal )
 {
    double a = v.dot(base);
    a = acos(a);
@@ -152,7 +154,7 @@ void Sphere::computeVeVn()
    vn = ZVec;
    ve = XVec;
    vne = YVec ;
-  
+
    if ( angle != 0 ) {
      ve = rotate(ve, ((angle * M_PI ) / 180), ZVec);
      ve.normalize();
@@ -175,7 +177,7 @@ Color Sphere::UVMapping(Point hit){
     Vector vp = hit - position;
     vp.normalize();
 
-    //lattitude angle range 0-pi 
+    //lattitude angle range 0-pi
     double phi = (vn.dot(vp));
     phi = acos(phi);
     double v = phi / M_PI;
@@ -197,26 +199,26 @@ Color Sphere::getColor(Point hit)
       return material->color;
    }else{
       if(!imageLoaded){
-	 if(strcmp ( material->texture.c_str() , "UV") == 0){
-	   Vector XVec = Triple(1.0, 0.0, 0.0);
-	   Vector YVec = Triple(0.0, 1.0, 0.0);
-	   Vector ZVec = Triple(0.0, 0.0, 1.0);
-	   vn = YVec;
-	   ve = XVec;
-	   vne = -ZVec ;
-         }else{		
-	   textureImage = new Image(material->texture.c_str());
-	   if(textureImage->width() == 0){
-	      std::cout << "!!! Impossible de lire l'image" << material->texture.c_str() << "\n";
-	   }
-	   computeVeVn();
+   if(strcmp ( material->texture.c_str() , "UV") == 0){
+     Vector XVec = Triple(1.0, 0.0, 0.0);
+     Vector YVec = Triple(0.0, 1.0, 0.0);
+     Vector ZVec = Triple(0.0, 0.0, 1.0);
+     vn = YVec;
+     ve = XVec;
+     vne = -ZVec ;
+         }else{
+     textureImage = new Image(material->texture.c_str());
+     if(textureImage->width() == 0){
+        std::cout << "!!! Impossible de lire l'image" << material->texture.c_str() << "\n";
+     }
+     computeVeVn();
         }
         imageLoaded = true;
       }
       if(strcmp ( material->texture.c_str() , "UV") == 0){
          return UVMapping(hit);
       }else{
-	 return mapping(textureImage, hit);
+   return mapping(textureImage, hit);
       }
    }
 }
