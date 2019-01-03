@@ -20,7 +20,6 @@
 #include "image.h"
 #include <string.h>
 #include <iostream>
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 
