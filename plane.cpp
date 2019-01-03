@@ -27,22 +27,22 @@ Hit Plane::intersect(const Ray &ray)
   Vector N = normal;
   N.normalize();
   /*
-   * Let's say the point Po is the intersection point between the plane and the line passing by the world's origin with the normal vector. 
-   * The point p, the intersection point between the plane and the ray. 
+   * Let's say the point Po is the intersection point between the plane and the line passing by the world's origin with the normal vector.
+   * The point p, the intersection point between the plane and the ray.
    * Po != p and since both points belong to the plane:
    *	 (1) (p - Po).dot(normal) = 0
-   * We can also define p by: 
-   *	 (2) p = ray.O + t * ray.D 
+   * We can also define p by:
+   *	 (2) p = ray.O + t * ray.D
    * In the same way Po can be defined by:
-   * 	 (3) Po = [0, 0, 0] + to * normal = to * normal;
+   *   (3) Po = [0, 0, 0] + to * normal = to * normal;
    * When we insert (2) and (3) in (1) we get:
-   *	 ( ray.O + t * ray.D - to * normal ).dot(normal) = 0 
-   * 	 => ray.O.dot(normal) + (t * ray.D).dot(normal) - (to * normal).dot(normal) = 0
-   * 	 => ray.O.dot(normal) + (t * ray.D).dot(normal) - to * (normal).dot(normal) = 0
-   * 	 => ray.O.dot(normal) + (t * ray.D).dot(normal) - to = 0
-   * 	 => ray.O.dot(normal) + t * ray.D.dot(normal) - to = 0
-   * 	 => t * ray.D.dot(normal) = to - ray.O.dot(normal)
-   * 	 => t = (to - ray.O.dot(normal)) / ray.D.dot(normal)  
+   *	 ( ray.O + t * ray.D - to * normal ).dot(normal) = 0
+   *   => ray.O.dot(normal) + (t * ray.D).dot(normal) - (to * normal).dot(normal) = 0
+   *   => ray.O.dot(normal) + (t * ray.D).dot(normal) - to * (normal).dot(normal) = 0
+   *   => ray.O.dot(normal) + (t * ray.D).dot(normal) - to = 0
+   *   => ray.O.dot(normal) + t * ray.D.dot(normal) - to = 0
+   *   => t * ray.D.dot(normal) = to - ray.O.dot(normal)
+   *   => t = (to - ray.O.dot(normal)) / ray.D.dot(normal)
    */
 
   //distance of the eye origin to the intersection point
@@ -64,5 +64,5 @@ double Plane::far(Triple eye)
 
 Color Plane::getColor(Point hit)
 {
-
+  return material->color;
 }
