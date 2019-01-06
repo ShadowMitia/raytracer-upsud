@@ -100,8 +100,8 @@ raytracer/scene.h
 
 ### Added files:
 raytracer/camera.cpp
-	/camera.h
-	Camera class, which respresents the camera used to view the scene.
+    /camera.h
+    Camera class, which respresents the camera used to view the scene.
 raytracer/scene01-camera-ss-reflect-lights-shadows.yaml
 raytracer/scene01-zoom-ss-reflect-lights-shadows.yaml
 
@@ -115,23 +115,32 @@ raytracer/material.h
     Add of texture
 raytracer/object.h
     Virtual prototype of getColor function
+    Virtual prototype of mapping function
+    Virtual prototype of UVMapping function
 raytracer/plane.cpp
-        /plane.h
+         /plane.h
     Add of getColor function
+    Add of mapping function
+    Add of UVMapping function
 raytracer/raytracer.cpp
     Modicfication in the parseMaterial function to read the texture of an object
     Modicfication in the parseObject function to read the rotation value of an object
+    Modification in parseMaterial to load images and only load them once (with unordered_map)
 raytracer/sphere.cpp
         /sphere.h
     Add of mapping, getColor, UVMapping, getAngle and computeVeVn functions
     Modification of the sphere constructor
+    Modification of getColor (compared to simple texture mapping), to allow for bump mapping (NOT WORKING)
+raytracer/scene.cpp
+         /scene.h
+     Change to show bump normal texture when RenderMode is "normals"
 
 ### Added files:
 raytracer/scene01-texture-coordinate-basic.yaml
 raytracer/scene01-texture-coordinate-ss-reflect-lights-shadows-800x800-2x2.yaml
 raytracer/scene01-texture-rotated-ss-reflect-lights-shadows-800x800-2x2.yaml
 raytracer/scene01-texture-ss-reflect-lights-shadows-800x800-2x2.yaml
-
+raytracer/scene01-bump-mapping.yaml
 
 
 Raytracer C++ framework for "Introduction to Computer Graphics"
