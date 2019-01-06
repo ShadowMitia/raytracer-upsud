@@ -54,15 +54,49 @@ Triple parseTriple(const YAML::Node& node)
 
 Material* Raytracer::parseMaterial(const YAML::Node& node)
 {
+
   Material *m = new Material();
+  m->color = Color(0.0, 0.0, 0.0);
+
   if(node.FindValue("color")){
-	node["color"] >> m->color;
-	m->texture = "";
+    node["color"] >> m->color;
   }
-  if(node.FindValue("texture")){
-	node["texture"] >> m->texture;
- 	m->color = Color(0.0,0.0,0.0); 
+
+  if(node.FindValue("texture")) {
+    std::string texSrc = node["texture"];
+    if (texSrc == "UV") {
+      m->showUV = true;
+    } else {
+      m->showUV = false;
+      if (imageHandler.find(texSrc) == imageHandler.end()) {
+        imageHandler[texSrc] = new Image(texSrc.c_str());
+        if (imageHandler[texSrc]->width() == 0) {
+          std::cout << "!!! Impossible de lire l'image"
+                    << texSrc << "\n";
+        } else {
+          std::cout << "Importation de : " << texSrc << "\n";
+        }
+      }
+      m->texture = imageHandler[texSrc];
+    }
+  } else {
+    m->texture = nullptr;
   }
+
+  if (node.FindValue("bump")) {
+    std::string texSrc = node["bump"];
+    if (imageHandler.find(texSrc) == imageHandler.end()) {
+      imageHandler[texSrc] = new Image(texSrc.c_str());
+      if (imageHandler[texSrc]->width() == 0) {
+        std::cout << "!!! Impossible de lire l'image" << texSrc << "\n";
+      } else {
+        std::cout << "Importation de : " << texSrc << "\n";
+      }
+    }
+
+    m->bump = imageHandler[texSrc];
+  }
+
   node["ka"] >> m->ka;
   node["kd"] >> m->kd;
   node["ks"] >> m->ks;

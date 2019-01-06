@@ -25,25 +25,25 @@ class Sphere : public Object
 public:
     Sphere(Point position_, double r_, double angle_, Triple vec_) : position(position_), r(r_), angle(angle_), vec(vec_) { }
 
-    virtual Hit intersect(const Ray &ray);
+    virtual Hit intersect(const Ray &ray) override;
 
-    virtual double near(Triple eye);
+    virtual double near(Triple eye) override;
 
-    virtual double far(Triple eye);
+    virtual double far(Triple eye) override;
 
     const Point position;
-    const double r;
+  const double r;
     double angle;
     Triple vec;
-    Vector ve, vn, vne ;
-    Image *textureImage;
-    bool imageLoaded = false;
+  Vector ve = Triple(0.0, 1.0, 0.0);
+  Vector vn = Triple(1.0, 0.0, 0.0);
+  Vector vne = Triple(0.0, 0.0, -1.0);
 
-    virtual Color mapping(Image *texture, Point hit);
-    virtual Color getColor(Point hit);
-    virtual Color UVMapping(Point hit);
-    virtual double getAngle (Vector v , Vector base, Vector normal); 
-    virtual void computeVeVn();
+  virtual Color mapping(Image *texture, Point hit) override;
+  virtual Color getColor(Point hit, Point normal) override;
+  virtual Color UVMapping(Point hit) override;
+  double getAngle (Vector v , Vector base, Vector normal);
+  void computeVeVn();
 };
 
 #endif /* end of include guard: SPHERE_H_115209AE */

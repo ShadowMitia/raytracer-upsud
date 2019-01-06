@@ -62,7 +62,7 @@ double Plane::far(Triple eye)
   return d + to;
 }
 
-Color Plane::getColor(Point hit)
+Color Plane::getColor(Point hit, Point normal)
 {
   return material->color;
 }

@@ -104,20 +104,24 @@ double Sphere::far(Triple eye)
 
 Color Sphere::mapping(Image *texture, Point hit)
 {
-    double u;
-    Vector vp = hit - position;
-    vp.normalize();
+  double u;
+  Vector vp = hit - position;
+  vp.normalize();
 
-    //lattitude angle range 0-pi
-    double phi = (vn.dot(vp));
-    phi = acos(phi);
-    double v = phi / M_PI;
+  // lattitude angle range 0-pi
+  double phi = (vn.dot(vp));
+  phi = acos(phi);
+  double v = phi / M_PI;
 
-    //longiture angle on equator range 0-2pi
-    Vector vpp = vn.cross(vp).cross(vn);
-    vpp.normalize();
-    double theta =  getAngle ( vpp , ve , vne) ;
-    u = theta / ( 2 * M_PI);
+  // longiture angle on equator range 0-2pi
+  Vector vpp = vn.cross(vp).cross(vn);
+  vpp.normalize();
+  double theta = getAngle(vpp, ve, vne);
+  u = theta / (2.0 * M_PI);
+
+  if (std::isnan(u) || std::isnan(v)) {
+    return Color(0, 0, 0);
+    }
 
     Color color_res = texture->colorAt(u,v);
     return color_res;
@@ -191,33 +195,30 @@ Color Sphere::UVMapping(Point hit){
 }
 
 
-Color Sphere::getColor(Point hit)
+Color Sphere::getColor(Point hit, Point normal)
 {
 
-   if(material->texture == ""){
-      return material->color;
-   }else{
-      if(!imageLoaded){
-   if(strcmp ( material->texture.c_str() , "UV") == 0){
-     Vector XVec = Triple(1.0, 0.0, 0.0);
-     Vector YVec = Triple(0.0, 1.0, 0.0);
-     Vector ZVec = Triple(0.0, 0.0, 1.0);
-     vn = YVec;
-     ve = XVec;
-     vne = -ZVec ;
-         }else{
-     textureImage = new Image(material->texture.c_str());
-     if(textureImage->width() == 0){
-        std::cout << "!!! Impossible de lire l'image" << material->texture.c_str() << "\n";
-     }
-     computeVeVn();
-        }
-        imageLoaded = true;
-      }
-      if(strcmp ( material->texture.c_str() , "UV") == 0){
-         return UVMapping(hit);
-      }else{
-   return mapping(textureImage, hit);
-      }
-   }
+  if (material->showUV) {
+    return UVMapping(hit);
+  }
+
+  if (material->bump != nullptr) {
+    Triple uv = UVMapping(hit);
+    if (std::isnan(uv.x) || std::isnan(uv.z)) {
+      hit = Color(0.0, 0.0, 0.0);
+    } else {
+      hit = hit + material->bump->colorAt(uv.x, uv.z) * normal;
+      // hit += Vector(1.0, 1.0, 1.0);
+      // hit /= 2.0;
+      // std::cout << "hit: " << hit.x << " " << hit.y << " " << hit.z << "\n";
+    }
+  }
+
+
+  if (material->texture != nullptr) {
+    computeVeVn();
+    return mapping(material->texture, hit);
+  }
+
+  return material->color;
 }

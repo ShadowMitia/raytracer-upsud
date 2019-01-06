@@ -120,7 +120,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
    ****************************************************/
 
   //Color color = material->color;                  // place holder
-  Color color = obj->getColor(hit);              
+  Color color = obj->getColor(hit, N);
 
   /*
    *	Phong illumination
@@ -220,8 +220,22 @@ Color Scene::trace(const Ray &ray, int recDepth)
 
   //If the rendering mode is "normal"
   if(rendering == "normal") {
-    N += Vector(1.0, 1.0, 1.0);
-    N /= 2.0;
+    if (material->bump != nullptr) {
+      Triple uv = obj->UVMapping(hit);
+      //double w = material->bump->width();
+      //double h = material->bump->height();
+      if (std::isnan(uv.x) || std::isnan(uv.z)) {
+        N = Color(0.0, 0.0, 0.0);
+      } else {
+        N = material->bump->colorAt(uv.x,
+                                    uv.z) * N;
+        N += Vector(1.0, 1.0, 1.0);
+        N /= 2.0;
+      }
+    } else {
+      N += Vector(1.0, 1.0, 1.0);
+      N /= 2.0;
+    }
     color = N;
   }
 

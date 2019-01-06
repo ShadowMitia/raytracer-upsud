@@ -7,9 +7,9 @@
 //
 //  Author: Maarten Everts
 //
-//  This framework is inspired by and uses code of the raytracer framework of 
+//  This framework is inspired by and uses code of the raytracer framework of
 //  Bert Freudenberg that can be found at
-//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html 
+//  http://isgwww.cs.uni-magdeburg.de/graphik/lehre/cg2/projekt/rtprojekt.html
 //
 
 #ifndef RAYTRACER_H_6GQO67WK
@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include "triple.h"
 #include "light.h"
 #include "scene.h"
@@ -33,6 +34,8 @@ private:
     std::string parseRendering(const YAML::Node& node);
     double parseRecDepth(const YAML::Node& node);
     Camera* parseCamera(const YAML::Node& node);
+
+  std::unordered_map<std::string, Image*> imageHandler;
 
 public:
     Raytracer() { }
