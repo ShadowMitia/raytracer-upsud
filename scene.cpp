@@ -284,7 +284,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
         }
       }
 
-      Color kd = lights[i]->color * material->color * material->kd;
+      Color kd = lights[i]->color * obj->getColor(hit, N) * material->kd;
       Color kCool = Color(0, 0, b) + alpha * kd;
       Color kWarm = Color(y, y, 0) + beta * kd;
       color = kCool * (1.0 - N.dot(L)) / 2.0 + kWarm * (1.0 + N.dot(L))/ 2.0 + cs * material->ks;

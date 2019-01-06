@@ -207,9 +207,19 @@ Color Sphere::getColor(Point hit, Point normal)
     if (std::isnan(uv.x) || std::isnan(uv.z)) {
       hit = Color(0.0, 0.0, 0.0);
     } else {
-      hit = hit + material->bump->colorAt(uv.x, uv.z) * normal;
-      // hit += Vector(1.0, 1.0, 1.0);
-      // hit /= 2.0;
+
+      if (std::isnan(uv.x) || std::isnan(uv.z)) {
+
+      } else {
+        float dx;
+        float dy;
+        material->bump->derivativeAt(uv.x, uv.z, &dx, &dy);
+        Vector pu = hit / dx;
+        Vector pv = hit / dy;
+        Vector n = pu.cross(pv);
+        n.normalize();
+        hit = hit + material->bump->colorAt(uv.x, uv.z) * n;
+      }
       // std::cout << "hit: " << hit.x << " " << hit.y << " " << hit.z << "\n";
     }
   }

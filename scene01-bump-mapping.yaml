@@ -19,6 +19,7 @@ Camera:
     viewSize: [800, 800]
 
 # RenderMode: "normal"
+RenderMode: "gooch"
 
 Shadows: true
 MaxRecursionDepth: 2
