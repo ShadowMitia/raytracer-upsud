@@ -1,0 +1,318 @@
+---
+#  This is an example scene description for the raytracer framework created 
+#  for the Computer Science course "Introduction to Computer Graphics"
+#  taught at the University of Groningen by Tobias Isenberg.
+#
+#  The scene description format we use is based on YAML, which is a human friendly 
+#  data serialization standard. This gives us a flexible format which should be
+#  fairly easy to make both backward and forward compatible (i.e., by ignoring
+#  unknown directives). In addition parsers are available for many languages.
+#  See http://www.yaml.org/ for more information on YAML.
+#
+#  The example scene description should largely speak for itself. By now
+#  it should be clear that the #-character can be used to insert comments.
+
+RenderMode: "phong"
+Shadows: false
+MaxRecursionDepth: 2
+#SuperSampling:
+#  factor: 2
+
+Camera:
+    eye: [200,200,1000]
+    center: [200,200,0]
+    up: [0,1,0]
+    viewSize: [600,600]
+
+Lights:
+- position: [200,200,200]
+  color: [1.0,1.0,1.0]
+- position: [200,600,1500]
+  color: [1.0,1.0,1.0]
+
+Objects:
+- type: triangle
+  p1: [200,230,390]
+  p2: [230,200,390]
+  p3: [170,200,390]
+  material: # 
+    color: [0.0,0.7,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.2
+    n: 64
+- type: triangle
+  p1: [200,215,400]
+  p2: [245,165,400]
+  p3: [155,165,400]
+  material: # 
+    color: [0.0,0.5,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.2
+    n: 64
+- type: triangle
+  p1: [200,190,410]
+  p2: [260,130,410]
+  p3: [140,130,410]
+  material: # 
+    color: [0.0,0.3,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.2
+    n: 64
+
+- type: box
+  position: [200,120,400]
+  dimension: [20,20,20]
+  rotation: [0.0,-0.9,0]
+  material: # green
+    color: [0.8,0.0,0.0]
+    ka: 0.2
+    kd: 0.3
+    ks: 0.2
+    n: 8
+
+
+- type: sphere
+  position: [290,170,400]
+  radius: 20
+  material: # red
+    color: [1.0,0.0,0.0]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.8
+    n: 32
+- type: sphere
+  position: [140,220,400]
+  radius: 20
+  material: # yellow
+    color: [1.0,0.8,0.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.5
+    n: 1
+- type: sphere
+  position: [200,-250,200]
+  radius: 300
+  material: # earth
+    #color: [1.0,0.5,0.0]
+    texture: earth.png
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+
+
+
+- type: plane
+  normal: [0,0,100]
+  distance: 0
+  material: # fondrouge
+    color: [1.0,0.0,0.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+- type: plane
+  normal: [0,100,100]
+  distance: 50
+  material: # planchervert
+    color: [0.0,1.0,0.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+- type: plane
+  normal: [0,-125,100]
+  distance: -250
+  material: # planfondbleu
+    color: [0.0,0.0,1.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+- type: plane
+  normal: [100,0,100]
+  distance: 50
+  material: # murgauchebleuclair
+    color: [0.5,0.5,1.0]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+- type: plane
+  normal: [-100,0,100]
+  distance: -230
+  material: # murdroitrose
+    color: [1.0,0.5,0.5]
+    ka: 0.2
+    kd: 0.8
+    ks: 0.0
+    n: 32
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- type: sphere
+  position: [235,325,235]
+  radius: 15
+  material: # Red Hat
+    color: [0.8,0.2,0.2]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.1
+    n: 64
+
+- type: sphere
+  position: [210,290,230]
+  radius: 40
+  material: # Red Hat
+    color: [0.8,0.2,0.2]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.1
+    n: 64
+
+- type: sphere
+  position: [200,270,240]
+  radius: 40
+  material: # white head
+    color: [0.8,0.8,0.9]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [200,150,200]
+  radius: 100
+  material: # white body
+    color: [0.8,0.8,0.9]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+
+
+#right foot
+- type: sphere
+  position: [235,60,235]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [250,60,230]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [220,60,240]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+#Left foot
+- type: sphere
+  position: [165,60,235]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [150,60,230]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [180,60,240]
+  radius: 10
+  material: # orange
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+
+
+- type: sphere
+  position: [170,170,180]
+  radius: 90
+  material: # left black arm
+    color: [0.2,0.2,0.2]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [230,170,180]
+  radius: 90
+  material: # right black arm
+    color: [0.2,0.2,0.2]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [200,260,295]
+  radius: 10
+  material: # orenge nose
+    color: [1.0,0.5,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [185,280,280]
+  radius: 5
+  material: # black eye left
+    color: [0.1,0.1,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+- type: sphere
+  position: [215,280,280]
+  radius: 5
+  material: # black eye right
+    color: [0.1,0.1,0.1]
+    ka: 0.2
+    kd: 0.7
+    ks: 0.0
+    n: 64
+

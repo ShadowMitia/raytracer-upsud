@@ -16,6 +16,8 @@
 #include "object.h"
 #include "sphere.h"
 #include "plane.h"
+#include "triangle.h"
+#include "box.h"
 #include "material.h"
 #include "light.h"
 #include "camera.h"
@@ -133,6 +135,28 @@ Object* Raytracer::parseObject(const YAML::Node& node)
     Plane *plane = new Plane(normal,to);
     returnObject = plane;
   }
+    else if (objectType == "triangle") {
+        Point p1;
+        node["p1"] >> p1;
+        Point p2;
+        node["p2"] >> p2;
+        Point p3;
+        node["p3"] >> p3;
+        Triangle *triangle = new Triangle(p1,p2,p3);
+	triangle->InitTriangle();
+        returnObject = triangle;
+    }
+    else if (objectType == "box") {
+        Point position;
+        node["position"] >> position;
+        Point dimension;
+        node["dimension"] >> dimension;
+        Point rotation;
+        node["rotation"] >> rotation;
+        Box *box = new Box(position,dimension,rotation);
+	box->InitBox();
+        returnObject = box;
+    }
 
   if (returnObject) {
     // read the material and attach to object

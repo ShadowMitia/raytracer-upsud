@@ -40,7 +40,7 @@ LIBS = -lm
 
 EXECUTABLE = ray
 
-OBJS = main.o raytracer.o sphere.o plane.o light.o material.o camera.o \
+OBJS = main.o raytracer.o sphere.o plane.o triangle.o box.o light.o material.o camera.o \
 	image.o triple.o lodepng.o scene.o
 
 
