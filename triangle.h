@@ -5,18 +5,18 @@
 //Pyramide base rectangle
 class Triangle : public Object
 {
-public: 
+public:
     Triangle(Point p1,Point p2, Point p3) : p1(p1), p2(p2), p3(p3) { }
-    
+
     virtual void InitTriangle();
-   
+
     virtual Vector computeFaceNormal(Point p1,Point p2, Point p3);
 
-    virtual Hit intersect(const Ray &ray);
+    virtual Hit intersect(const Ray &ray) override;
 
-    virtual double near(Triple eye);
+    virtual double near(Triple eye) override;
 
-    virtual double far(Triple eye);
+    virtual double far(Triple eye) override;
 
     virtual bool SameSide(Point p1,Point p2, Point a,Point b);
     virtual bool PointInTriangle(Point p,Point a, Point b, Point c);
