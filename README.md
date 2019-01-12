@@ -143,6 +143,26 @@ raytracer/scene01-texture-ss-reflect-lights-shadows-800x800-2x2.yaml
 raytracer/scene01-bump-mapping.yaml
 
 
+
+# Lab session 6 : More geometries and 3D mesh files
+
+
+### Edited files:
+raytracer/raytracer.cpp
+    Modification in the parseObject function to build box and triangle object also
+
+
+### Added files:
+raytracer/box.cpp
+     	/box.h
+    Box class, which is a subclass of the Object class. Respresents a box in the scene.
+raytracer/triangle.cpp
+     	/triangle.h
+    Triangle class, which is a subclass of the Object class. Respresents a triangle in the scene.
+raytracer/scene-triangle-box-sphere-plane.yaml
+
+
+
 Raytracer C++ framework for "Introduction to Computer Graphics"
 ===============================================================
 
