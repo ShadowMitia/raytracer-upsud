@@ -22,9 +22,14 @@
 
 #include "material.h"
 
+#include <vector>
+#include <string>
+
 class Material;
 
 class Object {
+
+  bool showUV = false;
 public:
     Material *material;
 
@@ -36,7 +41,7 @@ public:
 
     virtual double far(Triple eye) = 0;
 
-  virtual Color getColor(Point hit, Point normal) = 0;
+  virtual Color getColor(Point hit) = 0;
 
   virtual Color UVMapping(Point hit) = 0;
 

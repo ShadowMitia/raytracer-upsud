@@ -23,14 +23,13 @@
 #include "camera.h"
 #include "image.h"
 #include "yaml/yaml.h"
+#include "model.h"
 #include <ctype.h>
 #include <fstream>
 #include <assert.h>
 
-// Functions to ease reading from YAML input
-void operator >> (const YAML::Node& node, Triple& t);
-Triple parseTriple(const YAML::Node& node);
 
+// Functions to ease reading from YAML input
 void operator >> (const YAML::Node& node, Triple& t)
 {
   if(node.size()==3){
@@ -69,7 +68,6 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
     if (texSrc == "UV") {
       m->showUV = true;
     } else {
-      m->showUV = false;
       if (imageHandler.find(texSrc) == imageHandler.end()) {
         imageHandler[texSrc] = new Image(texSrc.c_str());
         if (imageHandler[texSrc]->width() == 0) {
@@ -106,13 +104,46 @@ Material* Raytracer::parseMaterial(const YAML::Node& node)
   return m;
 }
 
+
+ Object* Raytracer::parseOBJ(const YAML::Node& node) {
+
+   Point pos = Point(0, 0, 0);
+
+   if (!node.FindValue("position")) {
+     std::cout << "No position\n";
+   }
+
+   node["position"] >> pos;
+
+   if (!node.FindValue("modelPath")) {
+     std::cout << "Can't find model file\n";
+   }
+
+   std::string modelPath;
+   if (!node.FindValue("modelPath")) {
+     std::cout << "No model path\n";
+   }
+   node["modelPath"] >> modelPath;
+
+   std::string materialPath;
+   if (node.FindValue("materialFile")) {
+     node["materialFile"] >> materialPath;
+   }
+
+   Object* returnObject = new Model(pos, modelPath, materialPath);
+
+   return returnObject;
+ }
+
 Object* Raytracer::parseObject(const YAML::Node& node)
 {
   Object *returnObject = NULL;
   std::string objectType;
   node["type"] >> objectType;
 
-  if (objectType == "sphere") {
+  if (objectType == "model") {
+    returnObject = parseOBJ(node);
+  } else if (objectType == "sphere") {
     Point pos;
     node["position"] >> pos;
     double r;
@@ -143,7 +174,7 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Point p3;
         node["p3"] >> p3;
         Triangle *triangle = new Triangle(p1,p2,p3);
-	triangle->InitTriangle();
+        triangle->InitTriangle();
         returnObject = triangle;
     }
     else if (objectType == "box") {
@@ -154,13 +185,16 @@ Object* Raytracer::parseObject(const YAML::Node& node)
         Point rotation;
         node["rotation"] >> rotation;
         Box *box = new Box(position,dimension,rotation);
-	box->InitBox();
+        box->InitBox();
         returnObject = box;
     }
 
   if (returnObject) {
     // read the material and attach to object
-    returnObject->material = parseMaterial(node["material"]);
+    if (!node.FindValue("material") && objectType == "model") {
+      } else {
+        returnObject->material = parseMaterial(node["material"]);
+      }
   }
 
   return returnObject;

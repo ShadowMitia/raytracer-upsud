@@ -18,8 +18,6 @@ Camera:
     up: [0,1,0]
     viewSize: [800, 800]
 
-#RenderMode: "normal"
-#RenderMode: "gooch"
 RenderMode: "phong"
 
 Shadows: true
@@ -75,16 +73,21 @@ Objects:
     kd: 0.8
     ks: 0
     n: 1
-- type: sphere
-  position: [110,130,200]
-  radius: 50
+- type: triangle
+  p1: [50,50,250]
+  p2: [50, 100, 200]
+  p3: [100, 100, 200]
   material: # orange
-    bump: "Shingles_Wood_Stylized_001_normal.png"
     color: [1.0,0.5,0.0]
+    #texture: "UV"
     ka: 0.2
     kd: 0.8
     ks: 0.5
     n: 32
+- type: model
+  position: [100, 100, 100]
+  modelPath: "teapot.obj"
+  materialFile: "toto"
 - type: sphere
   position: [200,200,-1000]
   radius: 1000

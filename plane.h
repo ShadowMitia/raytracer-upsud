@@ -39,7 +39,7 @@ public:
   virtual Color mapping(Image *texture, Point hit) override  {
     return Color(0, 0, 0);
   }
-  virtual Color getColor(Point hit, Point normal) override;
+  virtual Color getColor(Point hit) override;
   virtual Color UVMapping(Point hit) override {
     return Color(0, 0, 0);
   };

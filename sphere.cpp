@@ -195,35 +195,12 @@ Color Sphere::UVMapping(Point hit){
 }
 
 
-Color Sphere::getColor(Point hit, Point normal)
+Color Sphere::getColor(Point hit)
 {
 
   if (material->showUV) {
     return UVMapping(hit);
   }
-
-  if (material->bump != nullptr) {
-    Triple uv = UVMapping(hit);
-    if (std::isnan(uv.x) || std::isnan(uv.z)) {
-      hit = Color(0.0, 0.0, 0.0);
-    } else {
-
-      if (std::isnan(uv.x) || std::isnan(uv.z)) {
-
-      } else {
-        float dx;
-        float dy;
-        material->bump->derivativeAt(uv.x, uv.z, &dx, &dy);
-        Vector pu = hit / dx;
-        Vector pv = hit / dy;
-        Vector n = pu.cross(pv);
-        n.normalize();
-        hit = hit + material->bump->colorAt(uv.x, uv.z) * n;
-      }
-      // std::cout << "hit: " << hit.x << " " << hit.y << " " << hit.z << "\n";
-    }
-  }
-
 
   if (material->texture != nullptr) {
     computeVeVn();

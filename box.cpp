@@ -16,7 +16,7 @@ Hit Box::intersect(const Ray &ray)
   //    5 --------- 6
   //    / |       /|
   //   /  |      / |
-  // 1 ---|----- 2 | 
+  // 1 ---|----- 2 |
   //   | 8/     |  /7
   //   | /      | /
   //   |/       |/
@@ -26,61 +26,61 @@ Hit Box::intersect(const Ray &ray)
   //face p1, p2, p3, p4
   t = computeDistance(p1, N1, ray);
   if(PointInQuad(ray.O + ray.D * t, p1, p2, p3, p4)){
-  	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N1;
-	}
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N1;
+  }
   }
   //face p8, p7, p3, p4
   t = computeDistance(p8, N2, ray);
   if(PointInQuad(ray.O + ray.D * t, p8, p7, p3, p4)){
-  	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N2;
-	}
-  
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N2;
+  }
+
   }
   //face p1, p4, P8, p5
   t = computeDistance(p1, N3, ray);
   if(PointInQuad(ray.O + ray.D * t, p1, p4, p8, p5)){
-   	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N3;
-	}
- 
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N3;
   }
- 
+
+  }
+
   //face p5, p6, p7, p8
   t = computeDistance(p5, N4, ray);
   if(PointInQuad(ray.O + ray.D * t, p5,  p6, p7, p8)){
-  	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N4;
-	}
-  
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N4;
   }
- 
+
+  }
+
   //face p2, p3, p7, p6
   t = computeDistance(p2, N5, ray);
   if(PointInQuad(ray.O + ray.D * t, p2, p3, p7, p6)){
-   	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N5;
-	}
- 
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N5;
+  }
+
   }
 
   //face p1, p2, p6, p5
   t = computeDistance(p1, N6, ray);
   if(PointInQuad(ray.O + ray.D * t, p1, p2, p6, p5)){
-   	if(newTmin(tmin, t)){
-		tmin = t;
-		Nmin = N6;
-	}
- 
+    if(newTmin(tmin, t)){
+    tmin = t;
+    Nmin = N6;
+  }
+
   }
   if(tmin <= 0){
-	  return Hit::NO_HIT();
+    return Hit::NO_HIT();
   }
 
   t = tmin;
@@ -89,33 +89,33 @@ Hit Box::intersect(const Ray &ray)
 }
 
 bool  Box::newTmin(double Tmin, double T){
-	if(T <= 0){
-		return false;
-	}
-	if(Tmin <= 0){
-		return true;
-	}
-	if(T < Tmin){
-		return true;
-	}
-	return false;
-		
+  if(T <= 0){
+    return false;
+  }
+  if(Tmin <= 0){
+    return true;
+  }
+  if(T < Tmin){
+    return true;
+  }
+  return false;
+
 }
 bool Box::SameSide(Point p1,Point p2, Point a,Point b){
    Point  cp1 = (b-a).cross(p1-a);
    Point  cp2 = (b-a).cross(p2-a);
     if( cp1.dot(cp2) >= 0 ){
-	 return true;
+   return true;
     }else{
-	 return false;
+   return false;
     }
 }
 
 bool Box::PointInQuad(Point p,Point a, Point b, Point c, Point d){
     if( SameSide(p,a, b,c) && SameSide(p,b, a,d) && SameSide(p,c, a,b) && SameSide(p, a, c, d)){
-	return true;
+  return true;
     }else{
-	return false;
+  return false;
     }
 }
 
@@ -130,7 +130,7 @@ double Box::computeDistance(Point p, Vector N, const Ray &ray){
 
 void Box::InitBox() {
   //origine point quand centre = 0, 0, 0
-  Point po1, po2, po3, po4, po5, po6, po7, po8; 
+  Point po1, po2, po3, po4, po5, po6, po7, po8;
 
   //pointe de la pyramide
   po1.x = -dimension.x/2;
@@ -144,7 +144,7 @@ void Box::InitBox() {
   po3.x = dimension.x/2;
   po3.y = -dimension.y/2;
   po3.z = dimension.z/2;
-  
+
   po4.x = -dimension.x/2;
   po4.y = -dimension.y/2;
   po4.z = dimension.z/2;
@@ -164,8 +164,8 @@ void Box::InitBox() {
   po8.x = -dimension.x/2;
   po8.y = -dimension.y/2;
   po8.z = -dimension.z/2;
-  
-  
+
+
   p1 = rotatePoint(po1);
   p2 = rotatePoint(po2);
   p3 = rotatePoint(po3);
@@ -191,7 +191,7 @@ void Box::InitBox() {
   //    5 --------- 6
   //    / |       /|
   //   /  |      / |
-  // 1 ---|----- 2 | 
+  // 1 ---|----- 2 |
   //   | 8/     |  /7
   //   | /      | /
   //   |/       |/
@@ -236,7 +236,7 @@ Point Box::rotatePoint(Point p){
    res.x = res.x * cos(rotation.y) + res.z * sin(rotation.y);
    res.y =  res.y;
    res.z =  -res.x * sin(rotation.y) + res.z * cos(rotation.y);
-  
+
    res.x = res.x * cos(rotation.z) - res.y * sin(rotation.z);
    res.y =  res.x * sin(rotation.z) + res.y * cos(rotation.z);
    res.z =  res.z;
@@ -254,7 +254,7 @@ double Box::far(Triple eye)
    return d;
 }
 
-Color Box::getColor(Point hit, Point normal)
+Color Box::getColor(Point hit)
 {
   return material->color;
 }

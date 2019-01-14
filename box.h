@@ -5,11 +5,11 @@
 //Box
 class Box : public Object
 {
-public: 
+public:
     Box(Point position,Point dimension, Point rotation) : position(position), dimension(dimension), rotation(rotation) { }
-    
+
     virtual void InitBox();
-   
+
     virtual Vector computeFaceNormal(Point p1,Point p2, Point p3);
 
     virtual Point rotatePoint(Point p);
@@ -33,7 +33,7 @@ public:
   virtual Color mapping(Image *texture, Point hit) override  {
     return Color(0, 0, 0);
   }
-  virtual Color getColor(Point hit, Point normal) override;
+  virtual Color getColor(Point hit) override;
   virtual Color UVMapping(Point hit) override {
     return Color(0, 0, 0);
   };

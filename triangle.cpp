@@ -11,11 +11,11 @@ Hit Triangle::intersect(const Ray &ray)
   //face p1, p2, p3
   t = computeDistance(p1, N, ray);
   if(!PointInTriangle(ray.O + ray.D * t, p1, p2, p3)){
-  	return Hit::NO_HIT();
+    return Hit::NO_HIT();
   }
 
   if(t <= 0){
-	  return Hit::NO_HIT();
+    return Hit::NO_HIT();
   }
 
   return Hit(t,N);
@@ -25,17 +25,17 @@ bool Triangle::SameSide(Point p1,Point p2, Point a,Point b){
    Point  cp1 = (b-a).cross(p1-a);
    Point  cp2 = (b-a).cross(p2-a);
     if( cp1.dot(cp2) >= 0 ){
-	 return true;
+   return true;
     }else{
-	 return false;
+   return false;
     }
 }
 
 bool Triangle::PointInTriangle(Point p,Point a, Point b, Point c){
     if( SameSide(p,a, b,c) && SameSide(p,b, a,c) && SameSide(p,c, a,b)){
-	return true;
+  return true;
     }else{
-	return false;
+  return false;
     }
 }
 
@@ -73,7 +73,12 @@ double Triangle::far(Triple eye)
    return d;
 }
 
-Color Triangle::getColor(Point hit, Point normal)
+Color Triangle::getColor(Point hit)
 {
+
+  if (material->showUV) {
+    return UVMapping(hit);
+  }
+
   return material->color;
 }

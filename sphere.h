@@ -40,7 +40,7 @@ public:
   Vector vne = Triple(0.0, 0.0, -1.0);
 
   virtual Color mapping(Image *texture, Point hit) override;
-  virtual Color getColor(Point hit, Point normal) override;
+  virtual Color getColor(Point hit) override;
   virtual Color UVMapping(Point hit) override;
   double getAngle (Vector v , Vector base, Vector normal);
   void computeVeVn();

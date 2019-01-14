@@ -30,6 +30,7 @@ private:
     // Couple of private functions for parsing YAML nodes
     Material* parseMaterial(const YAML::Node& node);
     Object* parseObject(const YAML::Node& node);
+    Object *parseOBJ(const YAML::Node &node);
     Light* parseLight(const YAML::Node& node);
     std::string parseRendering(const YAML::Node& node);
     double parseRecDepth(const YAML::Node& node);

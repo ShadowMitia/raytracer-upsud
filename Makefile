@@ -7,7 +7,7 @@
 ### MACROS
 
 # GNU (everywhere)
-CPP = g++ -g -Og -Wall -Wextra
+CPP = g++ -g -O3 -Wall -Wextra
 CPP+= -Wshadow # warn the user if a variable declaration shadows one from a parent context
 CPP+= -Wnon-virtual-dtor # warn the user if a class with virtual functions has a
 		# non-virtual destructor. This helps catch hard to
@@ -32,6 +32,8 @@ CPP+=	-Wdouble-promotion # warn if float is implicit promoted to double
 CPP+=	-Wformat=2 # warn on security issues around functions that format output (ie printf)
 CPP+= -std=c++17
 
+#CPP+= -fopenmp
+
 
 # GNU (faster)
 #CPP = g++ -O5 -Wall -fomit-frame-pointer -ffast-math
@@ -40,7 +42,7 @@ LIBS = -lm
 
 EXECUTABLE = ray
 
-OBJS = main.o raytracer.o sphere.o plane.o triangle.o box.o light.o material.o camera.o \
+OBJS = main.o raytracer.o glm.o sphere.o plane.o triangle.o box.o light.o material.o camera.o \
 	image.o triple.o lodepng.o scene.o
 
 

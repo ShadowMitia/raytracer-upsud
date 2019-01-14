@@ -154,12 +154,18 @@ raytracer/raytracer.cpp
 
 ### Added files:
 raytracer/box.cpp
-     	/box.h
+        /box.h
     Box class, which is a subclass of the Object class. Respresents a box in the scene.
 raytracer/triangle.cpp
-     	/triangle.h
+        /triangle.h
     Triangle class, which is a subclass of the Object class. Respresents a triangle in the scene.
 raytracer/scene-triangle-box-sphere-plane.yaml
+raytracer/raytracer.cpp
+    Add option to add "model" as an object type
+raytracer/model.h
+    Add representation for a mesh of triangles imported from an OBJ file (unfinished)
+extra:
+    Some tests for openmp intergration (WIP, some examples work fine and are faster, other get stuck in inifinte loop...)
 
 
 

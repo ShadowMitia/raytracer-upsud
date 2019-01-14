@@ -27,10 +27,23 @@ public:
   virtual Color mapping(Image *texture, Point hit) override  {
     return Color(0, 0, 0);
   }
-  virtual Color getColor(Point hit, Point normal) override;
+  virtual Color getColor(Point hit) override;
   virtual Color UVMapping(Point hit) override {
-    return Color(0, 0, 0);
+
+    Triple uvw = barycentricCenter(p1, p2, hit);
+
+    Triple uv= Triple(1, 0, 0) * uvw.x + Triple(0, 1, 0) * uvw.y + Triple(0, 0, 1) * uvw.z;
+
+    return Color(uv.x, 0, uv.z);
   };
+
+  Triple barycentricCenter(Point p1, Point p2, Point hit) {
+    double triAreaU = ((p1 - hit).cross(p2 - hit)).length() / 2;
+    double triAreaV = ((p3 - hit).cross(p2 - hit)).length() / 2;
+    double triAreaW = 1 - triAreaU - triAreaV;
+
+    return Triple(triAreaU, triAreaV, triAreaW);
+  }
 };
 
 

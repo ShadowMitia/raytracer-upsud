@@ -20,6 +20,8 @@
 #include "material.h"
 #include "camera.h"
 
+#include <omp.h>
+
 void Scene::computeNearFar()
 {
   if(objects.size() != 0){
@@ -120,7 +122,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
    ****************************************************/
 
   //Color color = material->color;                  // place holder
-  Color color = obj->getColor(hit, N);
+  Color color = obj->getColor(hit);
 
   /*
    *	Phong illumination
@@ -137,7 +139,6 @@ Color Scene::trace(const Ray &ray, int recDepth)
     Color cs = Color(0.0, 0.0, 0.0);
     //Reflection color
     Color cr = Color(0.0, 0.0, 0.0);
-
 
     for( size_t i = 0; i < lights.size() ; ++i){
       //Ambiant
@@ -163,10 +164,22 @@ Color Scene::trace(const Ray &ray, int recDepth)
         }
       }
 
+      if (material->bump != nullptr) {
+        Triple uv = obj->UVMapping(hit);
+        if (std::isnan(uv.x) || std::isnan(uv.z)) {
+          N = Color(0.0, 0.0, 0.0);
+        } else {
+          N = material->bump->colorAt(uv.x, uv.z) * N;
+          //N += Vector(1.0, 1.0, 1.0);
+          //N /= 2.0;
+        }
+      }
+
       //If cosinus is negative (in the shadow area) then the diff isn't taken into account
-      if(!hasHit && diff > 0){
+      if(!hasHit && diff > 0.01){
         Id += diff;
         cd += (lights[i]->color / 2.0) *  Id;
+
         //Vector of reflected light
         Vector R = (2.0 * N.dot(L) * N) - L;
         R.normalize();
@@ -176,25 +189,28 @@ Color Scene::trace(const Ray &ray, int recDepth)
         Vector H = L+V;
         H.normalize();
 
-        //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
-        if(cosRV >= 0){
-          //Specular
-          double spec = material->ks * pow(cosRV, material->n);
-          cs += lights[i]->color * spec;
-        }
+          // If cosinus is negative (at the opposite of the view) then the spec
+          // isn't taken into account
+          if (cosRV >= 0) {
+            // Specular
+            double spec = material->ks * pow(cosRV, material->n);
+            cs += lights[i]->color * spec;
+          }
       }
     }
 
     if(recDepth > 0) {
+
       //Vector of reflected light
       Vector RR =  (2.0 * N.dot(ray.D) * N) - ray.D;
       RR.normalize();
+
       Ray rray(hit, -RR);
-      cr = trace(rray, recDepth-1);
-    }
+      cr = trace(rray, recDepth - 1);
 
     //final color
-    color = (ca + cd) * color + (cs + cr) * material->ks;
+      color = (ca + cd) * color + (cs + cr) * material->ks;
+  }
   }
 
   /*
@@ -276,6 +292,15 @@ Color Scene::trace(const Ray &ray, int recDepth)
         Vector H = L+V;
         H.normalize();
 
+        if (material->bump != nullptr) {
+          Triple uv = obj->UVMapping(hit);
+          if (!std::isnan(uv.x) && !std::isnan(uv.z)) {
+            // H = H.cross(material->bump->colorAt(uv.x, uv.z));
+            N = N.cross(material->bump->colorAt(uv.x, uv.z)) - N;
+            N.normalize();
+          }
+        }
+
         //If cosinus is negative (at the opposite of the view) then the spec isn't taken into account
         if(cosRV > 0) {
           //Specular
@@ -284,7 +309,7 @@ Color Scene::trace(const Ray &ray, int recDepth)
         }
       }
 
-      Color kd = lights[i]->color * obj->getColor(hit, N) * material->kd;
+      Color kd = lights[i]->color * obj->getColor(hit) * material->kd;
       Color kCool = Color(0, 0, b) + alpha * kd;
       Color kWarm = Color(y, y, 0) + beta * kd;
       color = kCool * (1.0 - N.dot(L)) / 2.0 + kWarm * (1.0 + N.dot(L))/ 2.0 + cs * material->ks;
@@ -301,6 +326,8 @@ void Scene::renderEye(Image &img)
 {
   int w = img.width();
   int h = img.height();
+
+#pragma omp parallel for collapse(2)
   for (int y = 0; y < h; y++) {
     for (int x = 0; x < w; x++) {
       Color averageColor = Color(0.0, 0.0, 0.0);
@@ -337,11 +364,12 @@ void Scene::renderCam(Image &img)
   Vector B = ((camera->center - camera->eye).cross(A)).normalized();
   Vector H = A * camera->up.length();
   Vector V = B * camera->up.length();
+
+#pragma omp parallel for collapse(2)
   for (int y = -h ; y < h; y++) {
     for (int x = -w; x < w; x++) {
 
       Color averageColor = Color(0.0, 0.0, 0.0);
-
       for (int i = 0; i < superSampling; i++) {
         for (int j = 0; j < superSampling; j++) {
 
@@ -361,13 +389,14 @@ void Scene::renderCam(Image &img)
       }
       averageColor /= static_cast<double>(superSampling * superSampling);
       averageColor.clamp();
-      img(x+w,y+h) = averageColor;
+      img(x + w, y + h) = averageColor;
     }
   }
 }
 
 void Scene::render(Image &img)
 {
+
   if(withEye){
     renderEye(img);
     return;
