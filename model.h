@@ -80,11 +80,11 @@ public:
   }
 
   virtual double near(Triple eye) {
-
+    return 0;
   }
 
   virtual double far(Triple eye) {
-
+    return 0;
   }
 
   virtual Color getColor(Point hit) {
@@ -97,11 +97,11 @@ public:
   }
 
   virtual Color UVMapping(Point hit) {
-
+    return Color(0, 0, 0);
   }
 
   virtual Color mapping(Image *texture, Point hit) {
-
+    return Color(0, 0, 0);
   }
 };
 
