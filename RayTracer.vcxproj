@@ -131,6 +131,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="plane.h" />
+    <ClInclude Include="glm.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="triple.h" />
