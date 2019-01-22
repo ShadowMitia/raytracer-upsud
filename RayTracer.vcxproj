@@ -98,6 +98,7 @@
     <ClCompile Include="box.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="triple.cpp" />
+    <ClCompile Include="glm.c" />
     <ClCompile Include="yaml\aliascontent.cpp" />
     <ClCompile Include="yaml\content.cpp" />
     <ClCompile Include="yaml\conversion.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="plane.h" />
+    <ClInclude Include="glm.h" />
     <ClInclude Include="box.h" />
     <ClInclude Include="triangle.h" />
     <ClInclude Include="triple.h" />
