@@ -76,6 +76,7 @@ double Triangle::far(Triple eye)
 Color Triangle::getColor(Point hit)
 {
 
+  if (material == nullptr) return Color(0, 0, 0);
   if (material->showUV) {
     return UVMapping(hit);
   }
