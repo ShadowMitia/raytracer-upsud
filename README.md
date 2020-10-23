@@ -1,6 +1,12 @@
 Virginie Touchais
 Dimitri Belopopsky
 
+![](/images/scene-triangle-box-sphere-plane.png)
+![](/images/scene01-gooch-2.png)
+![](/images/scene01-shadows.png)
+
+See `error-images` and `images` for more screenshots.
+
 # Lab session 1 : Raycasting & Phong illumination
 
 
